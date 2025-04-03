@@ -1,0 +1,10 @@
+tail -f log.txt | grep 'keyword' &
+echo $!
+
+ls | cat
+
+echo 'League of legends' >> memo
+
+cat | a
+
+ls | ls
