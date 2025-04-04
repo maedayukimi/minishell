@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/03 15:30:13 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/04 13:27:43 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,15 +97,15 @@ static int	exec_sh_c(char **argv)
 
 int	exec_pipeline(t_node *head)
 {
-	int		n;
-	int		i;
-	int		j;
-	int		status;
-	int		(*pipes)[2];
-	pid_t	*pids;
-	t_node	*cur;
-	char	**argv;
-	char	*cmd_path;
+	int			n;
+	int			i;
+	int			j;
+	int			status;
+	int			(*pipes)[2];
+	pid_t		*pids;
+	t_node		*cur;
+	char		**argv;
+	char		*cmd_path;
 
 	n = 0;
 	pipes = NULL;
@@ -125,8 +125,6 @@ int	exec_pipeline(t_node *head)
 		{
 			if (pipe(pipes[i]) == -1)
 				fatal_error("pipe failed");
-			fprintf(stderr, "[DEBUG] Created pipe %d: read_fd=%d, write_fd=%d\n",
-				i, pipes[i][0], pipes[i][1]);
 			i++;
 		}
 	}
@@ -171,7 +169,6 @@ int	exec_pipeline(t_node *head)
 				argv = create_argv(cur->args);
 				if (!argv || !argv[0])
 					exit(0);
-				fprintf(stderr, "[DEBUG][Child %d] Executing command: %s\n", getpid(), argv[0]);
 				if (is_builtin(argv[0]))
 				{
 					status = exec_builtin(argv);
@@ -206,7 +203,6 @@ int	exec_pipeline(t_node *head)
 	while (i < n)
 	{
 		waitpid(pids[i], &status, 0);
-		fprintf(stderr, "[DEBUG][Parent] Child PID %d exited with status %d\n", pids[i], status);
 		i++;
 	}
 	free(pids);
@@ -288,6 +284,8 @@ int	exec(t_node *node)
 			while (node && node->separator && strcmp(node->separator, "|") == 0)
 				node = node->next;
 			status = exec_pipeline(pipeline_head);
+			if (node)
+				node = node->next;
 		}
 		else
 		{
