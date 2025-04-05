@@ -6,13 +6,14 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 18:03:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/01 16:58:24 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/05 18:44:01 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 extern char	**environ;
+extern char	**g_env;
 
 static int	is_valid_echo_option(const char *str)
 {
@@ -28,6 +29,105 @@ static int	is_valid_echo_option(const char *str)
 		i++;
 	}
 	return (1);
+}
+
+static void	update_env(const char *key, const char *value)
+{
+	int		key_len;
+	int		i;
+	char	*new_entry;
+	char	**new_env;
+	int		count;
+
+	key_len = strlen(key);
+	i = 0;
+	while (g_env && g_env[i])
+	{
+		if (strncmp(g_env[i], key, key_len) == 0 && g_env[i][key_len] == '=')
+		{
+			new_entry = malloc(key_len + 1 + strlen(value) + 1);
+			if (!new_entry)
+				fatal_error("malloc failed in update_env");
+			sprintf(new_entry, "%s=%s", key, value);
+			free(g_env[i]);
+			g_env[i] = new_entry;
+			environ = g_env;
+			return;
+		}
+		i++;
+	}
+	count = i;
+	new_env = malloc(sizeof(char *) * (count + 2));
+	if (!new_env)
+		fatal_error("malloc failed in update_env");
+	i = 0;
+	while (i < count)
+	{
+		new_env[i] = g_env[i];
+		i++;
+	}
+	new_entry = malloc(key_len + 1 + strlen(value) + 1);
+	if (!new_entry)
+		fatal_error("malloc failed in update_env");
+	sprintf(new_entry, "%s=%s", key, value);
+	new_env[count] = new_entry;
+	new_env[count + 1] = NULL;
+	if (g_env)
+		free(g_env);
+	g_env = new_env;
+	environ = g_env;
+}
+
+static void	remove_env(const char *key)
+{
+	int		key_len;
+	int		i;
+	int		j;
+	char	**new_env;
+	int		count;
+	int		index_to_remove;
+
+	key_len = strlen(key);
+	count = 0;
+	i = 0;
+	while (g_env && g_env[i])
+	{
+		count++;
+		i++;
+	}
+	index_to_remove = -1;
+	i = 0;
+	while (g_env && g_env[i])
+	{
+		if (strncmp(g_env[i], key, key_len) == 0 && g_env[i][key_len] == '=')
+		{
+			index_to_remove = i;
+			break;
+		}
+		i++;
+	}
+	if (index_to_remove == -1)
+		return;
+	free(g_env[index_to_remove]);
+	new_env = malloc(sizeof(char *) * (count));
+	if (!new_env)
+		fatal_error("malloc failed in remove_env");
+	i = 0;
+	j = 0;
+	while (g_env[i])
+	{
+		if (i == index_to_remove)
+		{
+			i++;
+			continue;
+		}
+		new_env[j++] = g_env[i];
+		i++;
+	}
+	new_env[j] = NULL;
+	free(g_env);
+	g_env = new_env;
+	environ = g_env;
 }
 
 static char	*interpret_escapes(const char *str)
@@ -178,13 +278,14 @@ static int	builtin_export(char **argv)
 	int		j;
 	char	*key_val;
 	char	*eq;
+	char	*val;
 
 	if (!argv[1])
 	{
 		j = 0;
-		while (environ[j])
+		while (g_env && g_env[j])
 		{
-			printf("declare -x %s\n", environ[j]);
+			printf("declare -x %s\n", g_env[j]);
 			j++;
 		}
 		return (0);
@@ -196,12 +297,15 @@ static int	builtin_export(char **argv)
 		eq = strchr(key_val, '=');
 		if (!eq)
 		{
-			fprintf(stderr, "export: invalid format: %s\n", key_val);
+			val = getenv(key_val);
+			if (!val)
+				val = "";
+			update_env(key_val, val);
 		}
 		else
 		{
 			*eq = '\0';
-			setenv(key_val, eq + 1, 1);
+			update_env(key_val, eq + 1);
 			*eq = '=';
 		}
 		i++;
@@ -216,9 +320,11 @@ static int	builtin_unset(char **argv)
 	i = 1;
 	while (argv[i])
 	{
+		remove_env(argv[i]);
 		unsetenv(argv[i]);
 		i++;
 	}
+	environ = g_env;
 	return (0);
 }
 
