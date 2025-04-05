@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/04 13:27:43 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/05 16:38:35 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,11 +332,22 @@ void	interpret(char *line, int *stat_loc)
 	free_node(node);
 }
 
+void	sigint_handler(int signum)
+{
+	(void)signum;
+	printf("\n");
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	int		status;
 	char	*line;
 
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 	(void)argv;
 	(void)argc;
 	init_env(envp);
