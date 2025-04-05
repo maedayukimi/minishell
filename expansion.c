@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:27 by mawako            #+#    #+#             */
-/*   Updated: 2025/03/31 18:31:46 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/05 14:45:44 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ void	remove_quote(t_token *tok)
 {
 	char	*new_word;
 	char	*p;
+	char	*status;
+	char	*tmp;
 	int		i;
 	size_t	j;
 
@@ -83,7 +85,7 @@ void	remove_quote(t_token *tok)
 		{
 			if (p[i + 1] == '?')
 			{
-				char *status = ft_itoa(g_last_exit_status);
+				status = ft_itoa(g_last_exit_status);
 				if (status)
 				{
 					j = 0;
@@ -95,7 +97,6 @@ void	remove_quote(t_token *tok)
 			}
 			else if (is_var_char(p[i + 1]))
 			{
-				char *tmp;
 				tmp = find_env(&p[i]);
 				if (tmp)
 				{
