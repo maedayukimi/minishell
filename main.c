@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/05 16:38:35 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/05 17:21:42 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,15 @@ void	fatal_error(const char *msg)
 {
 	fprintf(stderr, "Fatal error: %s\n", msg);
 	exit(1);
+}
+
+void	sigint_handler(int signum)
+{
+	(void)signum;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
 void	free_strs(char **strs)
@@ -67,6 +76,27 @@ char	*search_path(const char *filename)
 	}
 	free_strs(paths);
 	return (NULL);
+}
+
+int	wait_pipeline_children(pid_t *pids, int n)
+{
+	int	i;
+	int	status;
+	int	sigint_error;
+
+	i = 0;
+	status = 0;
+	sigint_error = 0;
+	while (i < n)
+	{
+		waitpid(pids[i], &status, 0);
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+			sigint_error = 1;
+		i++;
+	}
+	if (sigint_error)
+		write(1, "\n", 1);
+	return (status);
 }
 
 static int	exec_sh_c(char **argv)
@@ -200,11 +230,9 @@ int	exec_pipeline(t_node *head)
 		free(pipes);
 	}
 	i = 0;
-	while (i < n)
-	{
-		waitpid(pids[i], &status, 0);
-		i++;
-	}
+	signal(SIGINT, SIG_IGN);
+	status = wait_pipeline_children(pids, n);
+	signal(SIGINT, sigint_handler);
 	free(pids);
 	return (status);
 }
@@ -242,6 +270,8 @@ int	exec_cmd(t_node *node)
 		fatal_error("fork failed");
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		open_redir_file(node->redirects);
 		do_redirect(node->redirects);
 		if (is_builtin(argv[0]))
@@ -260,7 +290,11 @@ int	exec_cmd(t_node *node)
 	}
 	else
 	{
+		signal(SIGINT, SIG_IGN);
 		waitpid(pid, &wstatus, 0);
+		if (WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGINT)
+			write(1, "\n", 1);
+		signal(SIGINT, sigint_handler);
 		free(argv);
 		if (WIFEXITED(wstatus))
 			return (WEXITSTATUS(wstatus));
@@ -330,15 +364,6 @@ void	interpret(char *line, int *stat_loc)
 	setup_heredoc(node);
 	*stat_loc = exec(node);
 	free_node(node);
-}
-
-void	sigint_handler(int signum)
-{
-	(void)signum;
-	printf("\n");
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
 }
 
 int	main(int argc, char **argv, char **envp)
