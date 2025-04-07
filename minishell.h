@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/05 18:37:00 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/07 17:48:06 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,7 @@ t_node		*redirect_type2(t_token **rest, t_token *tok, char *type);
 void		free_node(t_node *node);
 void		free_token(t_token *tok);
 void		free_redirects(t_redirect *redir);
+void		free_argv(char **argv);
 char		**ft_split(char const *s, char c);
 int			read_heredoc(const char *delimiter, int expand, char *heredoc_file);
 char		*expand_variables(char *str);

@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/05 18:37:26 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/07 18:01:07 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +248,7 @@ int	exec_cmd(t_node *node)
 	argv = create_argv(node->args);
 	if (!argv || !argv[0])
 	{
-		free(argv);
+		free_argv(argv);
 		return (0);
 	}
 	if ((!strcmp(argv[0], "sh") || !strcmp(argv[0], "bash")
@@ -256,13 +256,13 @@ int	exec_cmd(t_node *node)
 		&& argv[1] && !strcmp(argv[1], "-c") && argv[2])
 	{
 		status = exec_sh_c(argv);
-		free(argv);
+		free_argv(argv);
 		return (status);
 	}
 	if (is_builtin(argv[0]) && node->redirects == NULL)
 	{
 		status = exec_builtin(argv);
-		free(argv);
+		free_argv(argv);
 		return (status);
 	}
 	pid = fork();
@@ -295,7 +295,7 @@ int	exec_cmd(t_node *node)
 		if (WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGINT)
 			write(1, "\n", 1);
 		signal(SIGINT, sigint_handler);
-		free(argv);
+		free_argv(argv);
 		if (WIFEXITED(wstatus))
 			return (WEXITSTATUS(wstatus));
 		else if (WIFSIGNALED(wstatus))
@@ -352,9 +352,11 @@ void	interpret(char *line, int *stat_loc)
 	if (!words || words->kind == TK_EOF)
 	{
 		*stat_loc = ERROR_TOKENIZE;
+		free_token(words);
 		return ;
 	}
 	node = parse(words);
+	free_token(words);
 	if (!node)
 	{
 		*stat_loc = 258;

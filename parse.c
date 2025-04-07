@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:04:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/03 15:23:19 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/07 17:58:06 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,7 @@ static t_node	*parse_simple_command(t_token **rest)
 			if (!tok->next || tok->next->kind != TK_WORD)
 			{
 				fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+				free_node(node);
 				return (NULL);
 			}
 			append_redirect(&node->redirects, redirect_type(&tok, tok, tok->word));
@@ -168,7 +169,7 @@ t_node	*parse(t_token *tok)
 	{
 		next_cmd = parse_simple_command(&tok);
 		if (!next_cmd)
-			return (NULL);
+			return (free_token(tok), NULL);
 		if (!head)
 			head = next_cmd;
 		else

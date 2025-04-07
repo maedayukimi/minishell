@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 18:03:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/05 18:44:01 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/07 18:04:55 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static void	update_env(const char *key, const char *value)
 			free(g_env[i]);
 			g_env[i] = new_entry;
 			environ = g_env;
-			return;
+			return ;
 		}
 		i++;
 	}
@@ -178,6 +178,7 @@ static int	builtin_echo(char **argv)
 	int		j;
 	int		newline;
 	int		interpret;
+	char	*expanded;
 	char	*processed;
 
 	i = 1;
@@ -198,9 +199,11 @@ static int	builtin_echo(char **argv)
 	}
 	while (argv[i])
 	{
+		expanded = expand_variables(argv[i]);
 		if (interpret)
 		{
-			processed = interpret_escapes(argv[i]);
+			processed = interpret_escapes(expanded);
+			free(expanded);
 			if (processed)
 			{
 				printf("%s", processed);
@@ -208,7 +211,10 @@ static int	builtin_echo(char **argv)
 			}
 		}
 		else
-			printf("%s", argv[i]);
+		{
+			printf("%s", expanded);
+			free(expanded);
+		}
 		if (argv[i + 1])
 			printf(" ");
 		i++;
