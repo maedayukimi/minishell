@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/08 16:14:35 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/09 19:11:05 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,6 @@ t_token		*word_func(char **rest, char *line);
 void		expansion(t_node *node);
 void		quote_removal(t_node *node);
 void		remove_quote(t_token *tok);
-void		append_char(char **s, char c);
 char		*find_env(char *p);
 char		*ft_strjoin(const char *s1, const char *s2);
 t_node		*new_node(t_node_kind kind);
@@ -133,9 +132,8 @@ void		free_redirects(t_redirect *redir);
 void		free_argv(char **argv);
 char		**ft_split(char const *s, char c);
 int			read_heredoc(const char *delimiter, int expand, char *heredoc_file);
-char		*expand_variables(char *str);
+char		*expand_variables(const char *str);
 char		*ft_itoa(int n);
-char		*expand_variables(char *str);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
 void		open_redir_file(t_redirect *redir);
 void		do_redirect(t_redirect *redir);
@@ -143,5 +141,13 @@ void		reset_redirect(t_redirect *redir);
 void		quote_removal_redirects(t_redirect *redir);
 int			setup_heredoc(t_node *node);
 int			is_var_char(char c);
+void		handle_dollar(const char *str, int *i, char **result);
+void		append_char(char **result, char c);
+char		*ft_strjoin_char_and_free(char *s, char c);
+char		*ft_strjoin_and_free(char *s1, char *s2);
+int			is_var_char(char c);
+char		*expand_exit_status(void);
+char		*get_shell_pid_str(void);
+char		*get_env_value(const char *name);
 
 #endif
