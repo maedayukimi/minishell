@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:04:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/09 13:34:27 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/09 14:39:33 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,6 +223,11 @@ t_node	*parse(t_token *tok)
 	cur = NULL;
 	while (tok && tok->kind != TK_EOF)
 	{
+		if (tok->kind == TK_OP && strcmp(tok->word, ")") == 0)
+		{
+			fprintf(stderr, "minishell: syntax error near unexpected token `)'\n");
+			return (NULL);
+		}
 		if (tok->kind == TK_OP && strcmp(tok->word, "(") == 0)
 			next_cmd = parse_group_command(&tok);
 		else
