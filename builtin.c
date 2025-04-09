@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 18:03:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/07 18:04:55 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/09 13:31:07 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,12 +102,12 @@ static void	remove_env(const char *key)
 		if (strncmp(g_env[i], key, key_len) == 0 && g_env[i][key_len] == '=')
 		{
 			index_to_remove = i;
-			break;
+			break ;
 		}
 		i++;
 	}
 	if (index_to_remove == -1)
-		return;
+		return ;
 	free(g_env[index_to_remove]);
 	new_env = malloc(sizeof(char *) * (count));
 	if (!new_env)
@@ -119,7 +119,7 @@ static void	remove_env(const char *key)
 		if (i == index_to_remove)
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		new_env[j++] = g_env[i];
 		i++;

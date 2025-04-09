@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:06 by mawako            #+#    #+#             */
-/*   Updated: 2025/03/28 19:41:09 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/08 18:08:43 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,12 @@ t_redirect	*redirect_type(t_token **rest, t_token *tok, char *type)
 		redir->type = ND_REDIR_IN;
 		redir->targetfd = STDIN;
 	}
-	else if (!strcmp(type, ">"))
+	else if (!strcmp(type, ">") || !strcmp(type, "1>"))
 	{
 		redir->type = ND_REDIR_OUT;
 		redir->targetfd = STDOUT;
 	}
-	else if (!strcmp(type, ">>"))
+	else if (!strcmp(type, ">>") || !strcmp(type, "1>>"))
 	{
 		redir->type = ND_REDIR_APPEND_OUT;
 		redir->targetfd = STDOUT;

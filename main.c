@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/07 18:01:07 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/09 13:32:34 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,24 @@ void	fatal_error(const char *msg)
 	exit(1);
 }
 
+static void	flush_stdin(void)
+{
+	int		n;
+	char	buf[256];
+	int		r;
+
+	if (ioctl(STDIN_FILENO, FIONREAD, &n) == 0 && n > 0)
+	{
+		while (n > 0)
+		{
+			r = read(STDIN_FILENO, buf, (n < 256 ? n : 256));
+			if (r <= 0)
+				break ;
+			n -= r;
+		}
+	}
+}
+
 void	sigint_handler(int signum)
 {
 	(void)signum;
@@ -31,6 +49,15 @@ void	sigint_handler(int signum)
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
+
+void	sigchld_handler(int sig)
+{
+	(void)sig;
+	while (waitpid(-1, NULL, WNOHANG) > 0)
+		;
+	flush_stdin();
+}
+
 
 void	free_strs(char **strs)
 {
@@ -97,6 +124,51 @@ int	wait_pipeline_children(pid_t *pids, int n)
 	if (sigint_error)
 		write(1, "\n", 1);
 	return (status);
+}
+
+int	exec_background(t_node *node)
+{
+	char	**argv;
+	char	*path;
+	pid_t	pid;
+	int		status;
+
+	argv = create_argv(node->args);
+	if (!argv || !argv[0])
+	{
+		free_argv(argv);
+		return (0);
+	}
+	pid = fork();
+	if (pid < 0)
+		fatal_error("fork failed");
+	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+		open_redir_file(node->redirects);
+		do_redirect(node->redirects);
+		if (is_builtin(argv[0]))
+		{
+			status = exec_builtin(argv);
+			exit(status);
+		}
+		else
+		{
+			path = search_path(argv[0]);
+			if (!path)
+				fatal_error("command not found");
+			execve(path, argv, environ);
+			fatal_error("execve failed");
+		}
+	}
+	else
+	{
+		g_last_bg_pid = pid;
+		printf("[%d] %d\n", 1, pid);
+		free_argv(argv);
+		return (0);
+	}
 }
 
 static int	exec_sh_c(char **argv)
@@ -307,12 +379,31 @@ int	exec_cmd(t_node *node)
 int	exec(t_node *node)
 {
 	int		status;
+	pid_t	pid;
+	int		wstatus;
 	t_node	*pipeline_head;
 
 	status = 0;
 	while (node)
 	{
-		if (node->separator && strcmp(node->separator, "|") == 0)
+		if (node->kind == ND_SUBSHELL)
+		{
+			pid = fork();
+			if (pid < 0)
+				fatal_error("fork failed");
+			if (pid == 0)
+			{
+				status = exec(node->child);
+				exit(status);
+			}
+			else
+			{
+				waitpid(pid, &wstatus, 0);
+				status = WIFEXITED(wstatus) ? WEXITSTATUS(wstatus) : 1;
+			}
+			node = node->next;
+		}
+		else if (node->separator && strcmp(node->separator, "|") == 0)
 		{
 			pipeline_head = node;
 			while (node && node->separator && strcmp(node->separator, "|") == 0)
@@ -320,6 +411,11 @@ int	exec(t_node *node)
 			status = exec_pipeline(pipeline_head);
 			if (node)
 				node = node->next;
+		}
+		else if (node->separator && strcmp(node->separator, "&") == 0)
+		{
+			status = exec_background(node);
+			node = node->next;
 		}
 		else
 		{
@@ -372,9 +468,14 @@ int	main(int argc, char **argv, char **envp)
 {
 	int		status;
 	char	*line;
+	struct sigaction		sa;
 
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
+	sa.sa_handler = sigchld_handler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGCHLD, &sa, NULL);
 	(void)argv;
 	(void)argc;
 	init_env(envp);

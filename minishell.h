@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/07 17:48:06 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/08 16:14:35 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
+# include <sys/ioctl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -67,6 +68,7 @@ typedef struct s_token
 typedef enum e_node_kind
 {
 	ND_SIMPLE_CMD,
+	ND_SUBSHELL,
 	ND_REDIR_OUT,
 	ND_REDIR_IN,
 	ND_REDIR_OUT_ERR,
@@ -88,6 +90,7 @@ typedef struct s_node
 	int					filefd;
 	int					stashed_targetfd;
 	int					stashed_targetfd2;
+	struct s_node		*child;
 }	t_node;
 
 extern pid_t	g_last_bg_pid;

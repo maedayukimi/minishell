@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:04:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/07 17:58:06 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/09 13:34:27 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_node	*new_node(t_node_kind kind)
 	node->filefd = 0;
 	node->stashed_targetfd = 0;
 	node->stashed_targetfd2 = 0;
+	node->child = NULL;
 	return (node);
 }
 
@@ -86,7 +87,7 @@ static int	is_redirect(const char *word)
 {
 	int			i;
 	static char *const	redirs[] = {
-		">>", "2>>", "<<", "<", ">", "2>", "1>", ">&1", "1>&1",
+		"1>>", "2>>", ">>", "<<", "<", ">", "2>", "1>", ">&1", "1>&1",
 		"1>&2", ">&2", "2>&2", "2>&1", "&>", ">&", NULL
 	};
 
@@ -133,7 +134,9 @@ static t_node	*parse_simple_command(t_token **rest)
 
 	tok = *rest;
 	node = new_node(ND_SIMPLE_CMD);
-	while (tok && tok->kind != TK_EOF && !is_control_operator(tok))
+	while (tok && tok->kind != TK_EOF &&
+		!is_control_operator(tok) &&
+		!(tok->kind == TK_OP && strcmp(tok->word, ")") == 0))
 	{
 		if (tok->kind == TK_WORD)
 		{
@@ -157,6 +160,59 @@ static t_node	*parse_simple_command(t_token **rest)
 	return (node);
 }
 
+static t_node	*parse_group_command(t_token **rest)
+{
+	t_token	*tok;
+	t_node	*head;
+	t_node	*cur;
+	t_node	*next_cmd;
+	t_node	*node;
+
+	tok = *rest;
+	head = NULL;
+	cur = NULL;
+	next_cmd = NULL;
+	if (!(tok && tok->kind == TK_OP && strcmp(tok->word, "(") == 0))
+	{
+		fprintf(stderr, "minishell: syntax error: expected '('\n");
+		return (NULL);
+	}
+	tok = tok->next;
+	while (tok && !(tok->kind == TK_OP && strcmp(tok->word, ")") == 0))
+	{
+		if (tok->kind == TK_OP && strcmp(tok->word, "(") == 0)
+			next_cmd = parse_group_command(&tok);
+		else
+			next_cmd = parse_simple_command(&tok);
+		if (!next_cmd)
+		{
+			free_node(head);
+			return (NULL);
+		}
+		if (!head)
+			head = next_cmd;
+		else
+			append_node(&cur->next, next_cmd);
+		cur = next_cmd;
+		if (is_control_operator(tok) && !(tok->kind == TK_OP && strcmp(tok->word, ")") == 0))
+		{
+			cur->separator = strdup(tok->word);
+			tok = tok->next;
+		}
+	}
+	if (!tok || !(tok->kind == TK_OP && strcmp(tok->word, ")") == 0))
+	{
+		fprintf(stderr, "minishell: syntax error: missing ')'\n");
+		free_node(head);
+		return (NULL);
+	}
+	tok = tok->next;
+	*rest = tok;
+	node = new_node(ND_SUBSHELL);
+	node->child = head;
+	return (node);
+}
+
 t_node	*parse(t_token *tok)
 {
 	t_node	*head;
@@ -167,9 +223,15 @@ t_node	*parse(t_token *tok)
 	cur = NULL;
 	while (tok && tok->kind != TK_EOF)
 	{
-		next_cmd = parse_simple_command(&tok);
+		if (tok->kind == TK_OP && strcmp(tok->word, "(") == 0)
+			next_cmd = parse_group_command(&tok);
+		else
+			next_cmd = parse_simple_command(&tok);
 		if (!next_cmd)
-			return (free_token(tok), NULL);
+		{
+			free_token(tok);
+			return (NULL);
+		}
 		if (!head)
 			head = next_cmd;
 		else

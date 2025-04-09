@@ -11,3 +11,4 @@ ls | ls
 aaa
 
 
+(ls | cat) & echo $!
