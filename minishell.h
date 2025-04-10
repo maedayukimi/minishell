@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/09 19:11:05 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/10 16:13:13 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ typedef struct s_node
 }	t_node;
 
 extern pid_t	g_last_bg_pid;
+extern char	**environ;
 
 void		fatal_error(const char *msg) __attribute__((noreturn));
 int			is_builtin(char *cmd);
@@ -149,5 +150,16 @@ int			is_var_char(char c);
 char		*expand_exit_status(void);
 char		*get_shell_pid_str(void);
 char		*get_env_value(const char *name);
+void		sigint_handler(int);
+int			count_pipeline_nodes(t_node *head);
+int			**setup_pipes(int n);
+void		cleanup_pipes(int **pipes, int n);
+void		setup_dup(int i, int n, int **pipes);
+void		close_all_pipes(int n, int **pipes);
+void		execute_command(t_node *node);
+void		setup_pipe_child(t_node *node, int i, int n, int **pipes);
+pid_t		*setup_pipe_children(t_node *head, int n, int **pipes);
+int			wait_pipeline_children(pid_t *pids, int n);
+int			exec_pipeline(t_node *head);
 
 #endif

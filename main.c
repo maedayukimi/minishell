@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/09 13:32:34 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/10 16:07:05 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,27 +105,6 @@ char	*search_path(const char *filename)
 	return (NULL);
 }
 
-int	wait_pipeline_children(pid_t *pids, int n)
-{
-	int	i;
-	int	status;
-	int	sigint_error;
-
-	i = 0;
-	status = 0;
-	sigint_error = 0;
-	while (i < n)
-	{
-		waitpid(pids[i], &status, 0);
-		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-			sigint_error = 1;
-		i++;
-	}
-	if (sigint_error)
-		write(1, "\n", 1);
-	return (status);
-}
-
 int	exec_background(t_node *node)
 {
 	char	**argv;
@@ -194,118 +173,6 @@ static int	exec_sh_c(char **argv)
 	status = exec(node);
 	free_node(node);
 	free_token(words);
-	return (status);
-}
-
-int	exec_pipeline(t_node *head)
-{
-	int			n;
-	int			i;
-	int			j;
-	int			status;
-	int			(*pipes)[2];
-	pid_t		*pids;
-	t_node		*cur;
-	char		**argv;
-	char		*cmd_path;
-
-	n = 0;
-	pipes = NULL;
-	cur = head;
-	while (cur)
-	{
-		n++;
-		cur = cur->next;
-	}
-	if (n > 1)
-	{
-		pipes = malloc(sizeof(int[2]) * (n - 1));
-		if (!pipes)
-			fatal_error("malloc failed");
-		i = 0;
-		while (i < n - 1)
-		{
-			if (pipe(pipes[i]) == -1)
-				fatal_error("pipe failed");
-			i++;
-		}
-	}
-	pids = malloc(sizeof(pid_t) * n);
-	if (!pids)
-		fatal_error("malloc failed");
-	cur = head;
-	i = 0;
-	while (i < n)
-	{
-		pids[i] = fork();
-		if (pids[i] < 0)
-			fatal_error("fork failed");
-		if (pids[i] == 0)
-		{
-			if (i > 0)
-			{
-				if (dup2(pipes[i - 1][0], STDIN_FILENO) == -1)
-					fatal_error("dup2 failed");
-			}
-			if (i < n - 1)
-			{
-				if (dup2(pipes[i][1], STDOUT_FILENO) == -1)
-					fatal_error("dup2 failed");
-			}
-			if (pipes)
-			{
-				j = 0;
-				while (j < n - 1)
-				{
-					close(pipes[j][0]);
-					close(pipes[j][1]);
-					j++;
-				}
-			}
-			if (cur->redirects)
-			{
-				open_redir_file(cur->redirects);
-				do_redirect(cur->redirects);
-			}
-			{
-				argv = create_argv(cur->args);
-				if (!argv || !argv[0])
-					exit(0);
-				if (is_builtin(argv[0]))
-				{
-					status = exec_builtin(argv);
-					free(argv);
-					exit(status);
-				}
-				else
-				{
-					cmd_path = search_path(argv[0]);
-					if (!cmd_path)
-						fatal_error("command not found");
-					execve(cmd_path, argv, environ);
-					fatal_error("execve failed");
-				}
-			}
-		}
-		cur = cur->next;
-		i++;
-	}
-	if (pipes)
-	{
-		i = 0;
-		while (i < n - 1)
-		{
-			close(pipes[i][0]);
-			close(pipes[i][1]);
-			i++;
-		}
-		free(pipes);
-	}
-	i = 0;
-	signal(SIGINT, SIG_IGN);
-	status = wait_pipeline_children(pids, n);
-	signal(SIGINT, sigint_handler);
-	free(pids);
 	return (status);
 }
 
