@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/10 16:07:05 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/11 14:11:05 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,57 +21,6 @@ void	fatal_error(const char *msg)
 {
 	fprintf(stderr, "Fatal error: %s\n", msg);
 	exit(1);
-}
-
-static void	flush_stdin(void)
-{
-	int		n;
-	char	buf[256];
-	int		r;
-
-	if (ioctl(STDIN_FILENO, FIONREAD, &n) == 0 && n > 0)
-	{
-		while (n > 0)
-		{
-			r = read(STDIN_FILENO, buf, (n < 256 ? n : 256));
-			if (r <= 0)
-				break ;
-			n -= r;
-		}
-	}
-}
-
-void	sigint_handler(int signum)
-{
-	(void)signum;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
-
-void	sigchld_handler(int sig)
-{
-	(void)sig;
-	while (waitpid(-1, NULL, WNOHANG) > 0)
-		;
-	flush_stdin();
-}
-
-
-void	free_strs(char **strs)
-{
-	int	i;
-
-	if (!strs)
-		return ;
-	i = 0;
-	while (strs[i])
-	{
-		free(strs[i]);
-		i++;
-	}
-	free(strs);
 }
 
 char	*search_path(const char *filename)
@@ -105,52 +54,7 @@ char	*search_path(const char *filename)
 	return (NULL);
 }
 
-int	exec_background(t_node *node)
-{
-	char	**argv;
-	char	*path;
-	pid_t	pid;
-	int		status;
-
-	argv = create_argv(node->args);
-	if (!argv || !argv[0])
-	{
-		free_argv(argv);
-		return (0);
-	}
-	pid = fork();
-	if (pid < 0)
-		fatal_error("fork failed");
-	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
-		open_redir_file(node->redirects);
-		do_redirect(node->redirects);
-		if (is_builtin(argv[0]))
-		{
-			status = exec_builtin(argv);
-			exit(status);
-		}
-		else
-		{
-			path = search_path(argv[0]);
-			if (!path)
-				fatal_error("command not found");
-			execve(path, argv, environ);
-			fatal_error("execve failed");
-		}
-	}
-	else
-	{
-		g_last_bg_pid = pid;
-		printf("[%d] %d\n", 1, pid);
-		free_argv(argv);
-		return (0);
-	}
-}
-
-static int	exec_sh_c(char **argv)
+int	exec_sh_c(char **argv)
 {
 	char	*subcmd;
 	int		status;
@@ -176,178 +80,23 @@ static int	exec_sh_c(char **argv)
 	return (status);
 }
 
-int	exec_cmd(t_node *node)
-{
-	char	**argv;
-	char	*path;
-	int		status;
-	int		wstatus;
-	pid_t	pid;
-
-	argv = create_argv(node->args);
-	if (!argv || !argv[0])
-	{
-		free_argv(argv);
-		return (0);
-	}
-	if ((!strcmp(argv[0], "sh") || !strcmp(argv[0], "bash")
-			|| !strcmp(argv[0], "zsh"))
-		&& argv[1] && !strcmp(argv[1], "-c") && argv[2])
-	{
-		status = exec_sh_c(argv);
-		free_argv(argv);
-		return (status);
-	}
-	if (is_builtin(argv[0]) && node->redirects == NULL)
-	{
-		status = exec_builtin(argv);
-		free_argv(argv);
-		return (status);
-	}
-	pid = fork();
-	if (pid < 0)
-		fatal_error("fork failed");
-	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
-		open_redir_file(node->redirects);
-		do_redirect(node->redirects);
-		if (is_builtin(argv[0]))
-		{
-			status = exec_builtin(argv);
-			exit(status);
-		}
-		else
-		{
-			path = search_path(argv[0]);
-			if (!path)
-				fatal_error("command not found");
-			execve(path, argv, environ);
-			fatal_error("execve failed");
-		}
-	}
-	else
-	{
-		signal(SIGINT, SIG_IGN);
-		waitpid(pid, &wstatus, 0);
-		if (WIFSIGNALED(wstatus) && WTERMSIG(wstatus) == SIGINT)
-			write(1, "\n", 1);
-		signal(SIGINT, sigint_handler);
-		free_argv(argv);
-		if (WIFEXITED(wstatus))
-			return (WEXITSTATUS(wstatus));
-		else if (WIFSIGNALED(wstatus))
-			return (128 + WTERMSIG(wstatus));
-		return (1);
-	}
-}
-
-int	exec(t_node *node)
-{
-	int		status;
-	pid_t	pid;
-	int		wstatus;
-	t_node	*pipeline_head;
-
-	status = 0;
-	while (node)
-	{
-		if (node->kind == ND_SUBSHELL)
-		{
-			pid = fork();
-			if (pid < 0)
-				fatal_error("fork failed");
-			if (pid == 0)
-			{
-				status = exec(node->child);
-				exit(status);
-			}
-			else
-			{
-				waitpid(pid, &wstatus, 0);
-				status = WIFEXITED(wstatus) ? WEXITSTATUS(wstatus) : 1;
-			}
-			node = node->next;
-		}
-		else if (node->separator && strcmp(node->separator, "|") == 0)
-		{
-			pipeline_head = node;
-			while (node && node->separator && strcmp(node->separator, "|") == 0)
-				node = node->next;
-			status = exec_pipeline(pipeline_head);
-			if (node)
-				node = node->next;
-		}
-		else if (node->separator && strcmp(node->separator, "&") == 0)
-		{
-			status = exec_background(node);
-			node = node->next;
-		}
-		else
-		{
-			status = exec_cmd(node);
-			if (node->separator)
-			{
-				if (!strcmp(node->separator, "&&"))
-				{
-					if (status != 0)
-						break ;
-				}
-				else if (!strcmp(node->separator, "||"))
-				{
-					if (status == 0)
-						break ;
-				}
-			}
-			node = node->next;
-		}
-	}
-	return (status);
-}
-
-void	interpret(char *line, int *stat_loc)
-{
-	t_token	*words;
-	t_node	*node;
-
-	words = tokenize(line);
-	if (!words || words->kind == TK_EOF)
-	{
-		*stat_loc = ERROR_TOKENIZE;
-		free_token(words);
-		return ;
-	}
-	node = parse(words);
-	free_token(words);
-	if (!node)
-	{
-		*stat_loc = 258;
-		return ;
-	}
-	expansion(node);
-	setup_heredoc(node);
-	*stat_loc = exec(node);
-	free_node(node);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
-	int		status;
-	char	*line;
-	struct sigaction		sa;
+	int			status;
+	char		*line;
+	struct sigaction	sa;
 
+	(void)argv;
+	(void)argc;
+	init_env(envp);
+	environ = g_env;
+	status = 0;
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 	sa.sa_handler = sigchld_handler;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	sigaction(SIGCHLD, &sa, NULL);
-	(void)argv;
-	(void)argc;
-	init_env(envp);
-	environ = g_env;
-	status = 0;
 	while (1)
 	{
 		line = readline("minishell$ ");

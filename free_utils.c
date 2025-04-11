@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 17:49:56 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/07 18:04:09 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/10 17:39:08 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,19 @@ void	free_argv(char **argv)
 		i++;
 	}
 	free(argv);
+}
+
+void	free_strs(char **strs)
+{
+	int	i;
+
+	if (!strs)
+		return ;
+	i = 0;
+	while (strs[i])
+	{
+		free(strs[i]);
+		i++;
+	}
+	free(strs);
 }

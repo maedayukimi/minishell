@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/10 16:13:13 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/11 17:14:11 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void		fatal_error(const char *msg) __attribute__((noreturn));
 int			is_builtin(char *cmd);
 int			exec_builtin(char **argv);
 char		*search_path(const char *filename);
-void		interpret(char *line, int *stat_loc);
+void		interpret(char *line, int *status);
 char		**allocate_argv(t_token *tok, size_t size);
 char		**create_argv(t_token *tok);
 int			exec_cmd(t_node *node);
@@ -131,6 +131,7 @@ void		free_node(t_node *node);
 void		free_token(t_token *tok);
 void		free_redirects(t_redirect *redir);
 void		free_argv(char **argv);
+void		free_strs(char **strs);
 char		**ft_split(char const *s, char c);
 int			read_heredoc(const char *delimiter, int expand, char *heredoc_file);
 char		*expand_variables(const char *str);
@@ -151,7 +152,9 @@ char		*expand_exit_status(void);
 char		*get_shell_pid_str(void);
 char		*get_env_value(const char *name);
 void		sigint_handler(int);
-int			count_pipeline_nodes(t_node *head);
+void		sigchld_handler(int sig);
+void		flush_stdin(void);
+int			count_pl_nodes(t_node *head);
 int			**setup_pipes(int n);
 void		cleanup_pipes(int **pipes, int n);
 void		setup_dup(int i, int n, int **pipes);
@@ -159,7 +162,14 @@ void		close_all_pipes(int n, int **pipes);
 void		execute_command(t_node *node);
 void		setup_pipe_child(t_node *node, int i, int n, int **pipes);
 pid_t		*setup_pipe_children(t_node *head, int n, int **pipes);
-int			wait_pipeline_children(pid_t *pids, int n);
-int			exec_pipeline(t_node *head);
+int			wait_pl_children(pid_t *pids, int n);
+int			exec_pl(t_node *head);
+int			exec_sh_c(char **argv);
+int			exec_tree(t_node *node);
+int			exec_background(t_node *node);
+int			handle_subshell(t_node **node_ptr);
+int			handle_pl(t_node **node_ptr);
+int			handle_bg(t_node **node_ptr);
+int			handle_logical_separator(t_node **node_ptr, int status);
 
 #endif

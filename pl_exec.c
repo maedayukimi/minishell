@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipeline_exec.c                                    :+:      :+:    :+:   */
+/*   pl_exec.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:04:53 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/10 16:13:57 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/11 15:16:06 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ pid_t	*setup_pipe_children(t_node *head, int n, int **pipes)
 	return (pids);
 }
 
-int	wait_pipeline_children(pid_t *pids, int n)
+int	wait_pl_children(pid_t *pids, int n)
 {
 	int	i;
 	int	status;
@@ -88,19 +88,19 @@ int	wait_pipeline_children(pid_t *pids, int n)
 	return (status);
 }
 
-int	exec_pipeline(t_node *head)
+int	exec_pl(t_node *head)
 {
 	int		n;
 	int		status;
 	pid_t	*pids;
 	int		**pipes;
 
-	n = count_pipeline_nodes(head);
+	n = count_pl_nodes(head);
 	pipes = setup_pipes(n);
 	pids = setup_pipe_children(head, n, pipes);
 	cleanup_pipes(pipes, n);
 	signal(SIGINT, SIG_IGN);
-	status = wait_pipeline_children(pids, n);
+	status = wait_pl_children(pids, n);
 	signal(SIGINT, sigint_handler);
 	free(pids);
 	return (status);

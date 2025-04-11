@@ -11,8 +11,9 @@ SRCS	= main.c parse.c tokenizer.c free_utils.c \
 		  redirect_type.c redirect.c create_word.c token_utils.c \
 		  expand_variables.c ft_split.c ft_itoa.c heredoc.c \
 		  ft_substr.c env_management.c expand_utils.c handle_dollar.c \
-		  env_utils.c pipeline_exec.c pipeline_utils.c
-
+		  env_utils.c pl_exec.c pl_utils.c \
+		  bg_exec.c exec.c exec_cmd.c exec_simple.c interpret.c \
+		  signals.c
 OBJS	= $(SRCS:.c=.o)
 
 %.o: %.c

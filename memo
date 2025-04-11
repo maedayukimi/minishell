@@ -12,3 +12,23 @@ aaa
 
 
 (ls | cat) & echo $!
+
+echo "Mismatched quote
+
+ls 2>&1 | grep "minishell"
+
+echo "Start" && (sleep 1; echo "End")
+
+cat < non_existent_file
+
+(echo nested && (echo deeper | cat)) || echo "Failed"
+
+echo 'Single quotes with $NOT_EXPANDED'
+
+export VAR="Hello" && echo $VAR
+
+echo '$VAR'
+
+ls |
+
+echo "Backslash test \\"
