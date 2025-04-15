@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/11 17:14:11 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/15 19:47:33 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ t_token		*tokdup(t_token *tok);
 void		append_tok(t_token **tokens, t_token *tok);
 t_node		*parse(t_token *tok);
 t_redirect	*redirect_type(t_token **rest, t_token *tok, char *type);
-t_node		*redirect_type2(t_token **rest, t_token *tok, char *type);
+t_redirect	*redirect_type2(t_token **rest, t_token *tok, char *type);
 void		free_node(t_node *node);
 void		free_token(t_token *tok);
 void		free_redirects(t_redirect *redir);

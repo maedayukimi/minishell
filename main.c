@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/15 18:29:28 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/15 19:43:17 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ char	*get_complete_input(void)
 	line = readline("minishell$ ");
 	if (!line)
 		return (NULL);
-	while (!check_balanced(line))
+	while (!check_quote(line))
 	{
 		tmp = readline("> ");
 		if (!tmp)
