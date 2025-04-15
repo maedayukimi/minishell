@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/11 14:11:05 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/15 18:29:28 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,49 @@ int	exec_sh_c(char **argv)
 	return (status);
 }
 
+int	check_quote(const char *line)
+{
+	int	i;
+	int	sq;
+	int	dq;
+
+	i = 0;
+	sq = 0;
+	dq = 0;
+	while (line[i])
+	{
+		if (line[i] == '\'' && !dq)
+			sq = !sq;
+		else if (line[i] == '"' && !sq)
+			dq = !dq;
+		i++;
+	}
+	return (!sq && !dq);
+}
+
+char	*get_complete_input(void)
+{
+	char	*line;
+	char	*tmp;
+	char	*buffer;
+
+	line = readline("minishell$ ");
+	if (!line)
+		return (NULL);
+	while (!check_balanced(line))
+	{
+		tmp = readline("> ");
+		if (!tmp)
+			break ;
+		buffer = ft_strjoin(line, "\n");
+		free(line);
+		line = ft_strjoin(buffer, tmp);
+		free(buffer);
+		free(tmp);
+	}
+	return (line);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	int			status;
@@ -99,7 +142,7 @@ int	main(int argc, char **argv, char **envp)
 	sigaction(SIGCHLD, &sa, NULL);
 	while (1)
 	{
-		line = readline("minishell$ ");
+		line = get_complete_input();
 		if (!line)
 			break ;
 		if (*line)
