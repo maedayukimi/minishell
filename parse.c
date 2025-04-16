@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:04:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/15 19:50:39 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/16 16:58:48 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ static int	is_control_op(t_token *tok)
 	return (0);
 }
 
-static t_node	*parse_simple_command(t_token **rest)
+t_node	*parse_simple_command(t_token **rest)
 {
 	t_node	*node;
 	t_token	*tok;
@@ -260,10 +260,7 @@ t_node	*parse(t_token *tok)
 		else
 			next_cmd = parse_simple_command(&tok);
 		if (!next_cmd)
-		{
-			free_token(tok);
 			return (NULL);
-		}
 		if (!head)
 			head = next_cmd;
 		else
