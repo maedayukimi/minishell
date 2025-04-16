@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/15 19:47:33 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/16 18:44:25 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # define STDOUT 1
 # define STDIN 0
 # define STDERR 2
-# define R_HEREDOC 3
 
 # include <limits.h>
 # include <stdlib.h>
@@ -28,6 +27,7 @@
 # include <string.h>
 # include <ctype.h>
 # include <fcntl.h>
+# include <errno.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
@@ -35,9 +35,20 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+typedef enum e_redir_type
+{
+	RD_IN,
+	RD_OUT,
+	RD_APPEND_OUT,
+	RD_OUT_ERR,
+	RD_SP,
+	RD_APPEND_IN,
+	RD_HEREDOC,
+}	t_redir_type;
+
 typedef struct s_redirect
 {
-	int					type;
+	t_redir_type		type;
 	char				*word;
 	int					quoted;
 	int					heredoc_expand;
@@ -55,7 +66,7 @@ typedef enum e_token_kind
 	TK_WORD,
 	TK_RESERVED,
 	TK_OP,
-	TK_EOF,
+	TK_EOF
 }	t_token_kind;
 
 typedef struct s_token
@@ -68,13 +79,7 @@ typedef struct s_token
 typedef enum e_node_kind
 {
 	ND_SIMPLE_CMD,
-	ND_SUBSHELL,
-	ND_REDIR_OUT,
-	ND_REDIR_IN,
-	ND_REDIR_OUT_ERR,
-	ND_REDIR_SP,
-	ND_REDIR_APPEND_OUT,
-	ND_REDIR_APPEND_IN,
+	ND_SUBSHELL
 }	t_node_kind;
 
 typedef struct s_node
@@ -137,7 +142,7 @@ int			read_heredoc(const char *delimiter, int expand, char *heredoc_file);
 char		*expand_variables(const char *str);
 char		*ft_itoa(int n);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
-void		open_redir_file(t_redirect *redir);
+int			open_redir_file(t_redirect *redir);
 void		do_redirect(t_redirect *redir);
 void		reset_redirect(t_redirect *redir);
 void		quote_removal_redirects(t_redirect *redir);

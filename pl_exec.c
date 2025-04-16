@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:04:53 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/11 15:16:06 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/16 18:42:19 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ void	setup_pipe_child(t_node *node, int i, int n, int **pipes)
 	close_all_pipes(n, pipes);
 	if (node->redirects)
 	{
-		open_redir_file(node->redirects);
+		if (open_redir_file(node->redirects) < 0)
+			exit(1);
 		do_redirect(node->redirects);
 	}
 	execute_command(node);

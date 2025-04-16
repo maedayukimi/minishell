@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:33:55 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/11 14:01:56 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/16 18:42:02 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ static void	exec_child(t_node *node, char **argv)
 	signal(SIGQUIT, SIG_DFL);
 	if (node->redirects)
 	{
-		open_redir_file(node->redirects);
+		if (open_redir_file(node->redirects) < 0)
+			exit(1);
 		do_redirect(node->redirects);
 	}
 	if (is_builtin(argv[0]))
