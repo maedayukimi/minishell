@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:27 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/17 19:00:32 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/17 19:03:26 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,11 +153,16 @@ void	quote_removal(t_node *node)
 {
 	if (!node)
 		return ;
-	if (node->args)
-		remove_quote(node->args);
-	if (node->filename)
-		remove_quote(node->filename);
-	quote_removal_redirects(node->redirects);
+	if (node->kind == ND_SUBSHELL && node->child)
+		quote_removal(node->child);
+	else
+	{
+		if (node->args)
+			remove_quote(node->args);
+		if (node->filename)
+			remove_quote(node->filename);
+		quote_removal_redirects(node->redirects);
+	}
 	if (node->next)
 		quote_removal(node->next);
 }
