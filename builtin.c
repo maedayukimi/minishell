@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 18:03:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/09 13:31:07 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/17 16:07:22 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,6 @@ static int	builtin_echo(char **argv)
 	int		j;
 	int		newline;
 	int		interpret;
-	char	*expanded;
 	char	*processed;
 
 	i = 1;
@@ -199,22 +198,14 @@ static int	builtin_echo(char **argv)
 	}
 	while (argv[i])
 	{
-		expanded = expand_variables(argv[i]);
 		if (interpret)
 		{
-			processed = interpret_escapes(expanded);
-			free(expanded);
-			if (processed)
-			{
-				printf("%s", processed);
-				free(processed);
-			}
+			processed = interpret_escapes(argv[i]);
+			printf("%s", processed);
+			free(processed);
 		}
 		else
-		{
-			printf("%s", expanded);
-			free(expanded);
-		}
+			printf("%s", argv[i]);
 		if (argv[i + 1])
 			printf(" ");
 		i++;
