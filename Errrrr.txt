@@ -5,8 +5,6 @@ echo $!
 
 echo "Start" && (sleep 1; echo "End")
 
-(echo nested && (echo deeper | cat)) || echo "Failed"
-
 export VAR="Hello" && echo $VAR
 
 ls |
