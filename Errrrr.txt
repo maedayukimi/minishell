@@ -11,6 +11,4 @@ export VAR="Hello" && echo $VAR
 
 ls |
 
-echo "Backslash test \\"
-
 CtrlC when secondary prompt
