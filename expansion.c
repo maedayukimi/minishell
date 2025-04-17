@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:27 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/17 16:06:16 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/17 17:58:24 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,28 @@ void	remove_quote(t_token *tok)
 			i++;
 			while (p[i] && p[i] != DUOBLE_QUOTE_CHAR)
 			{
-				if (p[i] == '$')
+				if (p[i] == '\\' && (p[i + 1] == '\\' || p[i + 1]
+						== '"' || p[i + 1] == '$' || p[i + 1] == '`'))
+				{
+					append_char(&new_word, p[i + 1]);
+					i += 2;
+				}
+				else if (p[i] == '$')
 					handle_dollar(p, &i, &new_word);
 				else
 					append_char(&new_word, p[i++]);
 			}
 			if (p[i] == DUOBLE_QUOTE_CHAR)
+				i++;
+		}
+		else if (p[i] == '\\')
+		{
+			if (p[i + 1])
+			{
+				append_char(&new_word, p[i+1]);
+				i += 2;
+			}
+			else
 				i++;
 		}
 		else if (p[i] == '$')

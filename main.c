@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/15 19:43:17 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/17 17:52:23 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,25 +100,40 @@ int	check_quote(const char *line)
 	return (!sq && !dq);
 }
 
+static int	ends_with_unescaped_bs(const char *line)
+{
+	int	len;
+	int	count;
+
+	len = strlen(line);
+	count = 0;
+	while (len > 0 && line[--len] == '\\')
+		count++;
+	if (count % 2 == 1)
+		return (1);
+	return (0);
+}
+
 char	*get_complete_input(void)
 {
 	char	*line;
-	char	*tmp;
-	char	*buffer;
+	char	*more;
+	char	*new;
 
 	line = readline("minishell$ ");
 	if (!line)
 		return (NULL);
-	while (!check_quote(line))
+	while (!check_quote(line) || ends_with_unescaped_bs(line))
 	{
-		tmp = readline("> ");
-		if (!tmp)
+		more = readline("> ");
+		if (!more)
 			break ;
-		buffer = ft_strjoin(line, "\n");
+		if (ends_with_unescaped_bs(line))
+			line[strlen(line) - 1] = '\0';
+		new = ft_strjoin(line, more);
 		free(line);
-		line = ft_strjoin(buffer, tmp);
-		free(buffer);
-		free(tmp);
+		line = new;
+		free(more);
 	}
 	return (line);
 }
