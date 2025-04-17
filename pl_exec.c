@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:04:53 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/16 18:42:19 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/17 19:25:00 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,11 @@ int	wait_pl_children(pid_t *pids, int n)
 	}
 	if (sigint_error)
 		write(1, "\n", 1);
-	return (status);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
+	return (1);
 }
 
 int	exec_pl(t_node *head)

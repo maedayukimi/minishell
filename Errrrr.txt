@@ -3,8 +3,6 @@ echo $!
 
 (ls | cat) & echo $!
 
-echo "Start" && (sleep 1; echo "End")
-
 export VAR="Hello" && echo $VAR
 
 ls |
