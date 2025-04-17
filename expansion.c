@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:27 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/17 17:58:24 by mawako           ###   ########.fr       */
+/*   Updated: 2025/04/17 19:00:32 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	remove_quote(t_token *tok)
 		{
 			if (p[i + 1])
 			{
-				append_char(&new_word, p[i+1]);
+				append_char(&new_word, p[i + 1]);
 				i += 2;
 			}
 			else
