@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/17 17:52:23 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/06 17:15:43 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,40 +100,111 @@ int	check_quote(const char *line)
 	return (!sq && !dq);
 }
 
-static int	ends_with_unescaped_bs(const char *line)
+static int	line_ends_with_pipe(const char *line)
 {
-	int	len;
-	int	count;
+	size_t	i;
 
-	len = strlen(line);
-	count = 0;
-	while (len > 0 && line[--len] == '\\')
-		count++;
-	if (count % 2 == 1)
+	i = strlen(line);
+	while (i > 0 && (line[i - 1] == '\n'
+			|| isspace((unsigned char)line[i - 1])))
+		i--;
+	if (i > 0 && line[i - 1] == '|')
 		return (1);
 	return (0);
+}
+
+static int	ends_with_bs(const char *line, size_t *count)
+{
+	size_t	i;
+	size_t	c;
+
+	i = strlen(line);
+	while (i > 0 && (line[i - 1] == '\n'
+			|| isspace((unsigned char)line[i - 1])))
+		i--;
+	c = 0;
+	while (i > 0 && line[i - 1] == '\\')
+	{
+		c++;
+		i--;
+	}
+	*count = c;
+	if (c % 2 == 1)
+		return (1);
+	return (0);
+}
+
+static char	*join_bs_line(char *line, char *more, size_t bs_count)
+{
+	char	*new;
+	size_t	prefix;
+	size_t	i;
+
+	prefix = strlen(line);
+	while (prefix > 0 && (line[prefix - 1] == '\n'
+			|| isspace((unsigned char)line[prefix - 1])))
+		prefix--;
+	prefix -= bs_count;
+	new = malloc(prefix + bs_count - 1 + strlen(more) + 1);
+	if (new == NULL)
+		exit(EXIT_FAILURE);
+	i = 0;
+	while (i < bs_count - 1)
+	{
+		new[prefix + i] = '\\';
+		i++;
+	}
+	memcpy(new, line, prefix);
+	memcpy(new + prefix + i, more, strlen(more));
+	new[prefix + i + strlen(more)] = '\0';
+	free(line);
+	free(more);
+	return (new);
+}
+
+static char	*join_pipe_line(char *line, char *more)
+{
+	char	*new;
+	size_t	len;
+	size_t	i;
+
+	len = strlen(line);
+	new = malloc(len + 1 + strlen(more) + 1);
+	if (new == NULL)
+		exit(EXIT_FAILURE);
+	i = 0;
+	while (i < len)
+	{
+		new[i] = line[i];
+		i++;
+	}
+	new[i++] = '\n';
+	memcpy(new + i, more, strlen(more));
+	new[i + strlen(more)] = '\0';
+	free(line);
+	free(more);
+	return (new);
 }
 
 char	*get_complete_input(void)
 {
 	char	*line;
 	char	*more;
-	char	*new;
+	size_t	bs_count;
 
 	line = readline("minishell$ ");
-	if (!line)
+	if (line == NULL)
 		return (NULL);
-	while (!check_quote(line) || ends_with_unescaped_bs(line))
+	while (line_ends_with_pipe(line)
+		|| ends_with_bs(line, &bs_count))
 	{
 		more = readline("> ");
-		if (!more)
+		if (more == NULL)
 			break ;
-		if (ends_with_unescaped_bs(line))
-			line[strlen(line) - 1] = '\0';
-		new = ft_strjoin(line, more);
-		free(line);
-		line = new;
-		free(more);
+		if (ends_with_bs(line, &bs_count))
+			line = join_bs_line(line, more, bs_count);
+		else
+			line = join_pipe_line(line, more);
 	}
 	return (line);
 }

@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:04:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/16 16:58:48 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/06 17:18:40 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,12 @@ void	append_tok(t_token **tokens, t_token *tok)
 
 static int	is_fd_dup_op(const char *op)
 {
-	if (strcmp(op, ">&1") == 0 ||
-		strcmp(op, "1>&1") == 0 ||
-		strcmp(op, ">&2") == 0 ||
-		strcmp(op, "1>&2") == 0 ||
-		strcmp(op, "2>&1") == 0 ||
-		strcmp(op, "2>&2") == 0)
+	if (strcmp(op, ">&1") == 0
+		|| strcmp(op, "1>&1") == 0
+		|| strcmp(op, ">&2") == 0
+		|| strcmp(op, "1>&2") == 0
+		|| strcmp(op, "2>&1") == 0
+		|| strcmp(op, "2>&2") == 0)
 		return (1);
 	return (0);
 }
@@ -147,9 +147,9 @@ t_node	*parse_simple_command(t_token **rest)
 
 	tok = *rest;
 	node = new_node(ND_SIMPLE_CMD);
-	while (tok && tok->kind != TK_EOF &&
-		!is_control_op(tok) &&
-		!(tok->kind == TK_OP && strcmp(tok->word, ")") == 0))
+	while (tok && tok->kind != TK_EOF
+		&& !is_control_op(tok)
+		&& !(tok->kind == TK_OP && strcmp(tok->word, ")") == 0))
 	{
 		if (tok->kind == TK_WORD)
 		{

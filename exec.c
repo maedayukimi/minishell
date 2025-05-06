@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:42:10 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/17 19:23:28 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/06 16:24:04 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,26 @@ static int	process_exec_node(t_node **node_ptr, int *exit_loop)
 	}
 	else if (node->separator && !strcmp(node->separator, "|"))
 	{
+		if (!node->next)
+		{
+			fprintf(stderr,
+				"minishell: syntax error near unexpected token `|'\n");
+			*node_ptr = NULL;
+			return (258);
+		}
 		tail = node;
 		while (tail->separator && !strcmp(tail->separator, "|"))
+		{
+			if (!tail->next)
+			{
+				fprintf(stderr,
+					"minishell: syntax error near unexpected token `|'\n");
+				*node_ptr = NULL;
+				return (258);
+			}
 			tail = tail->next;
+		}
 		logical_sep = tail->separator;
-
 		status = handle_pl(node_ptr);
 		if (logical_sep)
 		{
@@ -59,7 +74,6 @@ static int	process_exec_node(t_node **node_ptr, int *exit_loop)
 		if (handle_logical_separator(node_ptr, status))
 			*exit_loop = 1;
 	}
-
 	return (status);
 }
 

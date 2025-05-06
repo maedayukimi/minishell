@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:21:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/11 17:09:10 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/06 16:14:43 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,11 @@ int	handle_logical_separator(t_node **node, int status)
 
 int	handle_pl(t_node **node_ptr)
 {
+	if (!(*node_ptr)->next)
+	{
+		fprintf(stderr, "minishell: syntax error near unexpected token `|'\n");
+		return (258);
+	}
 	int		status;
 	t_node	*pipeline_head;
 	t_node	*cur;
