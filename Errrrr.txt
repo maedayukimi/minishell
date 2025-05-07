@@ -5,6 +5,4 @@ echo $!
 
 export VAR="Hello" && echo $VAR
 
-ls |
-
 CtrlC when secondary prompt

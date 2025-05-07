@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/17 17:52:31 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/07 19:30:03 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,8 +130,6 @@ t_node		*new_node(t_node_kind kind);
 t_token		*tokdup(t_token *tok);
 void		append_tok(t_token **tokens, t_token *tok);
 t_node		*parse(t_token *tok);
-t_redirect	*redirect_type(t_token **rest, t_token *tok, char *type);
-t_redirect	*redirect_type2(t_token **rest, t_token *tok, char *type);
 void		free_node(t_node *node);
 void		free_token(t_token *tok);
 void		free_redirects(t_redirect *redir);
@@ -176,5 +174,22 @@ int			handle_subshell(t_node **node_ptr);
 int			handle_pl(t_node **node_ptr);
 int			handle_bg(t_node **node_ptr);
 int			handle_logical_separator(t_node **node_ptr, int status);
+void		init_redir(t_redirect *r);
+void		handle_rd_heredoc(t_redirect *r);
+void		handle_rd_in(t_redirect *r);
+void		handle_rd_out_stdout(t_redirect *r);
+void		handle_rd_out_fd1(t_redirect *r);
+void		handle_rd_append_stdout(t_redirect *r);
+void		handle_rd_append_fd1(t_redirect *r);
+void		handle_rd_err_stdout(t_redirect *r);
+void		handle_rd_err_append(t_redirect *r);
+void		handle_sp_stdout_stdout(t_redirect *r);
+void		handle_sp_stdout_stderr(t_redirect *r);
+void		handle_sp_stderr_stdout(t_redirect *r);
+void		handle_sp_stderr_stderr(t_redirect *r);
+void		set_redir_type(t_redirect *r, char *type);
+int			set_redir2_type(t_redirect *r, char *type);
+t_redirect	*redirect_type(t_token **rest, t_token *tok, char *type);
+t_redirect	*redirect_type2(t_token **rest, t_token *tok, char *type);
 
 #endif
