@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 14:18:51 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/08 14:44:15 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,6 @@ typedef struct s_node
 	int					stashed_targetfd2;
 	struct s_node		*child;
 }	t_node;
-
-// extern pid_t	g_last_bg_pid;
-// extern char	**environ;
 
 void		fatal_error(const char *msg) __attribute__((noreturn));
 int			is_builtin(char *cmd);

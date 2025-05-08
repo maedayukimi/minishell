@@ -6,13 +6,12 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 18:03:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 13:43:29 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/08 14:43:15 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// extern char	**environ;
 extern char	**g_env;
 
 static int	is_valid_echo_option(const char *str)

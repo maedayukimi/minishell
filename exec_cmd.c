@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:33:55 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 13:49:09 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/08 17:36:54 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,19 @@ static void	exec_child(t_node *node, char **argv, t_env *env)
 	}
 	if (is_builtin(argv[0]))
 		exit(exec_builtin(argv, env));
-	else
+	path = search_path(argv[0]);
+	if (!path)
 	{
-		path = search_path(argv[0]);
-		if (!path)
-			fatal_error("command not found");
-		execve(path, argv, env->environ);
-		fatal_error("execve failed");
+		fprintf(stderr, "Fatal error: command not found\n");
+		exit(127);
 	}
+	execve(path, argv, env->environ);
+	if (errno == EACCES)
+	{
+		fprintf(stderr, "Fatal error: permission denied\n");
+		exit(126);
+	}
+	exit(1);
 }
 
 static int	exec_parent(char **argv, pid_t pid)
@@ -92,13 +97,19 @@ int	exec_cmd(t_node *node, t_env *env)
 	}
 	status = handle_sh_builtin(node, argv, &handle, env);
 	if (handle)
+	{
+		env->last_exit_status = status;
 		return (status);
+	}
 	pid = fork();
 	if (pid < 0)
 		fatal_error("fork failed");
 	if (pid == 0)
 		exec_child(node, argv, env);
 	else
-		return (exec_parent(argv, pid));
-	return (0);
+	{
+		status = exec_parent(argv, pid);
+		env->last_exit_status = status;
+	}
+	return (status);
 }
