@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:27 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/17 19:03:26 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 13:58:31 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern int	g_exit_status;
-extern int	g_last_exit_status;
+// extern int	g_exit_status;
+// extern int	g_last_exit_status;
 
 void	append_char(char **s, char c)
 {
@@ -57,7 +57,7 @@ char	*find_env(char *p)
 	return (content);
 }
 
-void	remove_quote(t_token *tok)
+void	remove_quote(t_token *tok, t_env *env)
 {
 	char	*new_word;
 	char	*p;
@@ -90,7 +90,7 @@ void	remove_quote(t_token *tok)
 					i += 2;
 				}
 				else if (p[i] == '$')
-					handle_dollar(p, &i, &new_word);
+					handle_dollar(p, &i, &new_word, env);
 				else
 					append_char(&new_word, p[i++]);
 			}
@@ -108,13 +108,13 @@ void	remove_quote(t_token *tok)
 				i++;
 		}
 		else if (p[i] == '$')
-			handle_dollar(p, &i, &new_word);
+			handle_dollar(p, &i, &new_word, env);
 		else
 			append_char(&new_word, p[i++]);
 	}
 	free(tok->word);
 	tok->word = new_word;
-	remove_quote(tok->next);
+	remove_quote(tok->next, env);
 }
 
 char	*remove_quote_word(char *word)
@@ -149,22 +149,22 @@ char	*remove_quote_word(char *word)
 	return (new);
 }
 
-void	quote_removal(t_node *node)
+void	quote_removal(t_node *node, t_env *env)
 {
 	if (!node)
 		return ;
 	if (node->kind == ND_SUBSHELL && node->child)
-		quote_removal(node->child);
+		quote_removal(node->child, env);
 	else
 	{
 		if (node->args)
-			remove_quote(node->args);
+			remove_quote(node->args, env);
 		if (node->filename)
-			remove_quote(node->filename);
+			remove_quote(node->filename, env);
 		quote_removal_redirects(node->redirects);
 	}
 	if (node->next)
-		quote_removal(node->next);
+		quote_removal(node->next, env);
 }
 
 void	quote_removal_redirects(t_redirect *redir)
@@ -182,7 +182,7 @@ void	quote_removal_redirects(t_redirect *redir)
 	}
 }
 
-void	expansion(t_node *node)
+void	expansion(t_node *node, t_env *env)
 {
-	quote_removal(node);
+	quote_removal(node, env);
 }

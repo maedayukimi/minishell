@@ -3,27 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 19:10:12 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/09 19:10:28 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 13:46:30 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_env_value(const char *name)
+char	*get_env_value(const char *name, t_env *env)
 {
-	extern char	**environ;
+	// extern char	**environ;
 	int			i;
 	int			len;
 
 	len = strlen(name);
 	i = 0;
-	while (environ[i])
+	while (env->environ[i])
 	{
-		if (strncmp(environ[i], name, len) == 0 && environ[i][len] == '=')
-			return (environ[i] + len + 1);
+		if (strncmp(env->environ[i], name, len) == 0 && env->environ[i][len] == '=')
+			return (env->environ[i] + len + 1);
 		i++;
 	}
 	return ("");

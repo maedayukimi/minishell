@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pl_exec.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:04:53 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/17 19:25:00 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 14:20:01 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	execute_command(t_node *node)
+void	execute_command(t_node *node, t_env *env)
 {
 	char	**argv;
 	char	*cmd_path;
@@ -21,18 +21,18 @@ void	execute_command(t_node *node)
 	if (!argv || !argv[0])
 		exit(0);
 	if (is_builtin(argv[0]))
-		exit(exec_builtin(argv));
+		exit(exec_builtin(argv, env));
 	else
 	{
 		cmd_path = search_path(argv[0]);
 		if (!cmd_path)
 			fatal_error("command not found");
-		execve(cmd_path, argv, environ);
+		execve(cmd_path, argv, env->environ);
 		fatal_error("execve failed");
 	}
 }
 
-void	setup_pipe_child(t_node *node, int i, int n, int **pipes)
+void	setup_pipe_child(t_node *node, int i, int n, int **pipes, t_env *env)
 {
 	setup_dup(i, n, pipes);
 	close_all_pipes(n, pipes);
@@ -42,10 +42,10 @@ void	setup_pipe_child(t_node *node, int i, int n, int **pipes)
 			exit(1);
 		do_redirect(node->redirects);
 	}
-	execute_command(node);
+	execute_command(node, env);
 }
 
-pid_t	*setup_pipe_children(t_node *head, int n, int **pipes)
+pid_t	*setup_pipe_children(t_node *head, int n, int **pipes, t_env *env)
 {
 	pid_t	*pids;
 	t_node	*cur;
@@ -62,7 +62,7 @@ pid_t	*setup_pipe_children(t_node *head, int n, int **pipes)
 		if (pids[i] < 0)
 			fatal_error("fork failed");
 		if (pids[i] == 0)
-			setup_pipe_child(cur, i, n, pipes);
+			setup_pipe_child(cur, i, n, pipes, env);
 		cur = cur->next;
 		i++;
 	}
@@ -93,7 +93,7 @@ int	wait_pl_children(pid_t *pids, int n)
 	return (1);
 }
 
-int	exec_pl(t_node *head)
+int	exec_pl(t_node *head, t_env *env)
 {
 	int		n;
 	int		status;
@@ -102,7 +102,7 @@ int	exec_pl(t_node *head)
 
 	n = count_pl_nodes(head);
 	pipes = setup_pipes(n);
-	pids = setup_pipe_children(head, n, pipes);
+	pids = setup_pipe_children(head, n, pipes, env);
 	cleanup_pipes(pipes, n);
 	signal(SIGINT, SIG_IGN);
 	status = wait_pl_children(pids, n);

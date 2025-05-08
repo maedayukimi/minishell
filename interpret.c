@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   interpret.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:20:46 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/11 17:12:44 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 14:15:06 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	interpret(char *line, int *status)
+void	interpret(char *line, int *status, t_env *env)
 {
 	t_token	*words;
 	t_node	*node;
@@ -31,8 +31,8 @@ void	interpret(char *line, int *status)
 		*status = 258;
 		return ;
 	}
-	expansion(node);
-	setup_heredoc(node);
-	*status = exec_tree(node);
+	expansion(node, env);
+	setup_heredoc(node, env);
+	*status = exec_tree(node, env);
 	free_node(node);
 }

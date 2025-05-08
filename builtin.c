@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 18:03:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/17 16:07:22 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 13:43:29 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern char	**environ;
+// extern char	**environ;
 extern char	**g_env;
 
 static int	is_valid_echo_option(const char *str)
@@ -31,7 +31,7 @@ static int	is_valid_echo_option(const char *str)
 	return (1);
 }
 
-static void	update_env(const char *key, const char *value)
+static void	update_env(const char *key, const char *value, t_env *env)
 {
 	int		key_len;
 	int		i;
@@ -51,7 +51,7 @@ static void	update_env(const char *key, const char *value)
 			sprintf(new_entry, "%s=%s", key, value);
 			free(g_env[i]);
 			g_env[i] = new_entry;
-			environ = g_env;
+			env->environ = g_env;
 			return ;
 		}
 		i++;
@@ -75,10 +75,10 @@ static void	update_env(const char *key, const char *value)
 	if (g_env)
 		free(g_env);
 	g_env = new_env;
-	environ = g_env;
+	env->environ = g_env;
 }
 
-static void	remove_env(const char *key)
+static void	remove_env(const char *key, t_env *env)
 {
 	int		key_len;
 	int		i;
@@ -127,7 +127,7 @@ static void	remove_env(const char *key)
 	new_env[j] = NULL;
 	free(g_env);
 	g_env = new_env;
-	environ = g_env;
+	env->environ = g_env;
 }
 
 static char	*interpret_escapes(const char *str)
@@ -255,21 +255,21 @@ static int	builtin_pwd(void)
 	return (0);
 }
 
-static int	builtin_env(char **argv)
+static int	builtin_env(char **argv, t_env *env)
 {
 	int	i;
 
 	i = 0;
 	(void)argv;
-	while (environ[i])
+	while (env->environ[i])
 	{
-		printf("%s\n", environ[i]);
+		printf("%s\n", env->environ[i]);
 		i++;
 	}
 	return (0);
 }
 
-static int	builtin_export(char **argv)
+static int	builtin_export(char **argv, t_env *env)
 {
 	int		i;
 	int		j;
@@ -297,12 +297,12 @@ static int	builtin_export(char **argv)
 			val = getenv(key_val);
 			if (!val)
 				val = "";
-			update_env(key_val, val);
+			update_env(key_val, val, env);
 		}
 		else
 		{
 			*eq = '\0';
-			update_env(key_val, eq + 1);
+			update_env(key_val, eq + 1, env);
 			*eq = '=';
 		}
 		i++;
@@ -310,18 +310,18 @@ static int	builtin_export(char **argv)
 	return (0);
 }
 
-static int	builtin_unset(char **argv)
+static int	builtin_unset(char **argv, t_env *env)
 {
 	int	i;
 
 	i = 1;
 	while (argv[i])
 	{
-		remove_env(argv[i]);
+		remove_env(argv[i], env);
 		unsetenv(argv[i]);
 		i++;
 	}
-	environ = g_env;
+	env->environ = g_env;
 	return (0);
 }
 
@@ -358,7 +358,7 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-int	exec_builtin(char **argv)
+int	exec_builtin(char **argv, t_env *env)
 {
 	if (!argv[0])
 		return (1);
@@ -369,11 +369,11 @@ int	exec_builtin(char **argv)
 	else if (!strcmp(argv[0], "pwd"))
 		return (builtin_pwd());
 	else if (!strcmp(argv[0], "env"))
-		return (builtin_env(argv));
+		return (builtin_env(argv, env));
 	else if (!strcmp(argv[0], "export"))
-		return (builtin_export(argv));
+		return (builtin_export(argv, env));
 	else if (!strcmp(argv[0], "unset"))
-		return (builtin_unset(argv));
+		return (builtin_unset(argv, env));
 	else if (!strcmp(argv[0], "exit"))
 		return (builtin_exit(argv));
 	return (1);

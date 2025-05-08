@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:42:10 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/06 16:24:04 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 14:20:57 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	process_exec_node(t_node **node_ptr, int *exit_loop)
+static int	process_exec_node(t_node **node_ptr, int *exit_loop, t_env *env)
 {
 	t_node	*node;
 	t_node	*tail;
@@ -26,8 +26,7 @@ static int	process_exec_node(t_node **node_ptr, int *exit_loop)
 	if (node->kind == ND_SUBSHELL)
 	{
 		sep = node->separator;
-		status = handle_subshell(node_ptr);
-		if (sep)
+		status = handle_subshell(node_ptr, env);
 		{
 			if (!strcmp(sep, "&&") && status != 0)
 				*exit_loop = 1;
@@ -57,7 +56,7 @@ static int	process_exec_node(t_node **node_ptr, int *exit_loop)
 			tail = tail->next;
 		}
 		logical_sep = tail->separator;
-		status = handle_pl(node_ptr);
+		status = handle_pl(node_ptr, env);
 		if (logical_sep)
 		{
 			if (!strcmp(logical_sep, "&&") && status != 0)
@@ -67,17 +66,17 @@ static int	process_exec_node(t_node **node_ptr, int *exit_loop)
 		}
 	}
 	else if (node->separator && !strcmp(node->separator, "&"))
-		status = handle_bg(node_ptr);
+		status = handle_bg(node_ptr, env);
 	else
 	{
-		status = exec_cmd(node);
+		status = exec_cmd(node, env);
 		if (handle_logical_separator(node_ptr, status))
 			*exit_loop = 1;
 	}
 	return (status);
 }
 
-int	exec_tree(t_node *node)
+int	exec_tree(t_node *node, t_env *env)
 {
 	int	status;
 	int	exit_loop;
@@ -86,7 +85,7 @@ int	exec_tree(t_node *node)
 	exit_loop = 0;
 	while (node)
 	{
-		status = process_exec_node(&node, &exit_loop);
+		status = process_exec_node(&node, &exit_loop, env);
 		if (exit_loop)
 			break ;
 	}

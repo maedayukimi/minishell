@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/07 19:30:03 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 14:18:51 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # define STDIN 0
 # define STDERR 2
 
+# include <signal.h>
 # include <limits.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -34,6 +35,7 @@
 # include <sys/ioctl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include "env_management.h"
 
 typedef enum e_redir_type
 {
@@ -98,18 +100,18 @@ typedef struct s_node
 	struct s_node		*child;
 }	t_node;
 
-extern pid_t	g_last_bg_pid;
-extern char	**environ;
+// extern pid_t	g_last_bg_pid;
+// extern char	**environ;
 
 void		fatal_error(const char *msg) __attribute__((noreturn));
 int			is_builtin(char *cmd);
-int			exec_builtin(char **argv);
+int			exec_builtin(char **argv, t_env *env);
 char		*search_path(const char *filename);
-void		interpret(char *line, int *status);
+void		interpret(char *line, int *status, t_env *env);
 char		**allocate_argv(t_token *tok, size_t size);
 char		**create_argv(t_token *tok);
-int			exec_cmd(t_node *node);
-int			exec(t_node *node);
+int			exec_cmd(t_node *node, t_env *env);
+int			exec(t_node *node, t_env *env);
 t_token		*tokenize(char *line);
 void		tokenize_error(const char *location, char **rest, char *line);
 int			is_blank(char c);
@@ -121,9 +123,9 @@ int			is_word(const char *s);
 t_token		*new_token(char *word, t_token_kind kind);
 t_token		*operator_func(char **rest, char *line);
 t_token		*word_func(char **rest, char *line);
-void		expansion(t_node *node);
-void		quote_removal(t_node *node);
-void		remove_quote(t_token *tok);
+void		expansion(t_node *node, t_env *env);
+void		quote_removal(t_node *node, t_env *env);
+void		remove_quote(t_token *tok, t_env *env);
 char		*find_env(char *p);
 char		*ft_strjoin(const char *s1, const char *s2);
 t_node		*new_node(t_node_kind kind);
@@ -136,24 +138,24 @@ void		free_redirects(t_redirect *redir);
 void		free_argv(char **argv);
 void		free_strs(char **strs);
 char		**ft_split(char const *s, char c);
-int			read_heredoc(const char *delimiter, int expand, char *heredoc_file);
-char		*expand_variables(const char *str);
+int			read_heredoc(const char *delimiter, int expand, char *heredoc_file, t_env *env);
+char		*expand_variables(const char *str, t_env *env);
 char		*ft_itoa(int n);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
 int			open_redir_file(t_redirect *redir);
 void		do_redirect(t_redirect *redir);
 void		reset_redirect(t_redirect *redir);
 void		quote_removal_redirects(t_redirect *redir);
-int			setup_heredoc(t_node *node);
+int			setup_heredoc(t_node *node, t_env *env);
 int			is_var_char(char c);
-void		handle_dollar(const char *str, int *i, char **result);
+void		handle_dollar(const char *str, int *i, char **result, t_env *env);
 void		append_char(char **result, char c);
 char		*ft_strjoin_char_and_free(char *s, char c);
 char		*ft_strjoin_and_free(char *s1, char *s2);
 int			is_var_char(char c);
-char		*expand_exit_status(void);
+char		*expand_exit_status(t_env *env);
 char		*get_shell_pid_str(void);
-char		*get_env_value(const char *name);
+char		*get_env_value(const char *name, t_env *env);
 void		sigint_handler(int);
 void		sigchld_handler(int sig);
 void		flush_stdin(void);
@@ -162,17 +164,17 @@ int			**setup_pipes(int n);
 void		cleanup_pipes(int **pipes, int n);
 void		setup_dup(int i, int n, int **pipes);
 void		close_all_pipes(int n, int **pipes);
-void		execute_command(t_node *node);
-void		setup_pipe_child(t_node *node, int i, int n, int **pipes);
-pid_t		*setup_pipe_children(t_node *head, int n, int **pipes);
+void		execute_command(t_node *node, t_env *env);
+void		setup_pipe_child(t_node *node, int i, int n, int **pipes, t_env *env);
+pid_t		*setup_pipe_children(t_node *head, int n, int **pipes, t_env *env);
 int			wait_pl_children(pid_t *pids, int n);
-int			exec_pl(t_node *head);
-int			exec_sh_c(char **argv);
-int			exec_tree(t_node *node);
-int			exec_background(t_node *node);
-int			handle_subshell(t_node **node_ptr);
-int			handle_pl(t_node **node_ptr);
-int			handle_bg(t_node **node_ptr);
+int			exec_pl(t_node *head, t_env *env);
+int			exec_sh_c(char **argv, t_env *env);
+int			exec_tree(t_node *node, t_env *env);
+int			exec_background(t_node *node, t_env *env);
+int			handle_subshell(t_node **node_ptr, t_env *env);
+int			handle_pl(t_node **node_ptr, t_env *env);
+int			handle_bg(t_node **node_ptr, t_env *env);
 int			handle_logical_separator(t_node **node_ptr, int status);
 void		init_redir(t_redirect *r);
 void		handle_rd_heredoc(t_redirect *r);

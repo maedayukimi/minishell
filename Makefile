@@ -2,8 +2,8 @@ NAME	= minishell
 SHELL	= /bin/sh
 CC	= cc
 CFLAGS	= -Wall -Wextra -Werror -g
-LINK	= -lreadline -lncurses
-INC		= -I./
+LINK	= -lreadline -lncurses -L/opt/homebrew/opt/readline/lib
+INC		= -I./ -I/opt/homebrew/opt/readline/include
 RM	 = rm -f
 
 SRCS	= main.c parse.c tokenizer.c free_utils.c \

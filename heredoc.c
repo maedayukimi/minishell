@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:05:29 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/16 18:33:43 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 14:06:53 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	expand_and_write(int fd, char *line, int expand)
+static void	expand_and_write(int fd, char *line, int expand, t_env *env)
 {
 	char	*expanded;
 
 	if (expand)
-		expanded = expand_variables(line);
+		expanded = expand_variables(line, env);
 	else
 		expanded = strdup(line);
 	if (expanded)
@@ -28,7 +28,7 @@ static void	expand_and_write(int fd, char *line, int expand)
 	}
 }
 
-int	read_heredoc(const char *delimiter, int expand, char *heredoc_file)
+int	read_heredoc(const char *delimiter, int expand, char *heredoc_file, t_env *env)
 {
 	char	*line;
 	int		fd;
@@ -46,14 +46,14 @@ int	read_heredoc(const char *delimiter, int expand, char *heredoc_file)
 			free(line);
 			break ;
 		}
-		expand_and_write(fd, line, expand);
+		expand_and_write(fd, line, expand, env);
 		free(line);
 	}
 	close(fd);
 	return (0);
 }
 
-int	setup_heredoc(t_node *node)
+int	setup_heredoc(t_node *node, t_env *env)
 {
 	t_redirect	*redir;
 	static int	heredoc_count;
@@ -69,7 +69,7 @@ int	setup_heredoc(t_node *node)
 				"/tmp/.heredoc_%d", heredoc_count++);
 			redir->heredoc_filename = strdup(filename);
 			redir->heredoc_expand = !redir->quoted;
-			read_heredoc(redir->word, redir->heredoc_expand, filename);
+			read_heredoc(redir->word, redir->heredoc_expand, filename, env);
 		}
 		redir = redir->next;
 	}

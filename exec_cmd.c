@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:33:55 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/16 18:42:02 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 13:49:09 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	exec_child(t_node *node, char **argv)
+static void	exec_child(t_node *node, char **argv, t_env *env)
 {
 	char	*path;
 
@@ -25,13 +25,13 @@ static void	exec_child(t_node *node, char **argv)
 		do_redirect(node->redirects);
 	}
 	if (is_builtin(argv[0]))
-		exit(exec_builtin(argv));
+		exit(exec_builtin(argv, env));
 	else
 	{
 		path = search_path(argv[0]);
 		if (!path)
 			fatal_error("command not found");
-		execve(path, argv, environ);
+		execve(path, argv, env->environ);
 		fatal_error("execve failed");
 	}
 }
@@ -53,7 +53,7 @@ static int	exec_parent(char **argv, pid_t pid)
 	return (1);
 }
 
-static int	handle_sh_builtin(t_node *node, char **argv, int *handle)
+static int	handle_sh_builtin(t_node *node, char **argv, int *handle, t_env *env)
 {
 	int	status;
 
@@ -62,14 +62,14 @@ static int	handle_sh_builtin(t_node *node, char **argv, int *handle)
 			|| !strcmp(argv[0], "zsh")) && argv[1]
 		&& !strcmp(argv[1], "-c") && argv[2])
 	{
-		status = exec_sh_c(argv);
+		status = exec_sh_c(argv, env);
 		free_argv(argv);
 		*handle = 1;
 		return (status);
 	}
 	if (is_builtin(argv[0]) && node->redirects == NULL)
 	{
-		status = exec_builtin(argv);
+		status = exec_builtin(argv, env);
 		free_argv(argv);
 		*handle = 1;
 		return (status);
@@ -77,7 +77,7 @@ static int	handle_sh_builtin(t_node *node, char **argv, int *handle)
 	return (0);
 }
 
-int	exec_cmd(t_node *node)
+int	exec_cmd(t_node *node, t_env *env)
 {
 	char	**argv;
 	int		status;
@@ -90,14 +90,14 @@ int	exec_cmd(t_node *node)
 		free_argv(argv);
 		return (0);
 	}
-	status = handle_sh_builtin(node, argv, &handle);
+	status = handle_sh_builtin(node, argv, &handle, env);
 	if (handle)
 		return (status);
 	pid = fork();
 	if (pid < 0)
 		fatal_error("fork failed");
 	if (pid == 0)
-		exec_child(node, argv);
+		exec_child(node, argv, env);
 	else
 		return (exec_parent(argv, pid));
 	return (0);

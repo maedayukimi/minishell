@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand_variables.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 18:14:12 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/09 19:16:37 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 13:58:51 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*expand_variables(const char *str)
+char	*expand_variables(const char *str, t_env *env)
 {
 	char	*result;
 	int		i;
@@ -24,7 +24,7 @@ char	*expand_variables(const char *str)
 	while (str[i])
 	{
 		if (str[i] == '$')
-			handle_dollar(str, &i, &result);
+			handle_dollar(str, &i, &result, env);
 		else
 			append_char(&result, str[i++]);
 	}

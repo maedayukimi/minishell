@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bg_exec.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:28:05 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/11 15:06:11 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 13:45:07 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,23 +23,23 @@ static void	setup_child_bg(t_node *node)
 	}
 }
 
-static void	child_execute_bg(char **argv)
+static void	child_execute_bg(char **argv, t_env *env)
 {
 	char	*path;
 
 	if (is_builtin(argv[0]))
-		exit(exec_builtin(argv));
+		exit(exec_builtin(argv, env));
 	else
 	{
 		path = search_path(argv[0]);
 		if (!path)
 			fatal_error("command not found");
-		execve(path, argv, environ);
+		execve(path, argv, env->environ);
 		fatal_error("execve failed");
 	}
 }
 
-int	exec_background(t_node *node)
+int	exec_background(t_node *node, t_env *env)
 {
 	char	**argv;
 	pid_t	pid;
@@ -56,11 +56,11 @@ int	exec_background(t_node *node)
 	if (pid == 0)
 	{
 		setup_child_bg(node);
-		child_execute_bg(argv);
+		child_execute_bg(argv, env);
 	}
 	else
 	{
-		g_last_bg_pid = pid;
+		env->last_bg_pid = pid;
 		printf("[%d] %d\n", 1, pid);
 		free_argv(argv);
 		return (0);

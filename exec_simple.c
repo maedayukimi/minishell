@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec_simple.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:21:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/06 16:14:43 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 14:12:13 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	handle_subshell(t_node **node_ptr)
+int	handle_subshell(t_node **node_ptr, t_env *env)
 {
 	int		status;
 	pid_t	pid;
@@ -23,7 +23,7 @@ int	handle_subshell(t_node **node_ptr)
 		fatal_error("fork failed");
 	if (pid == 0)
 	{
-		status = exec_tree((*node_ptr)->child);
+		status = exec_tree((*node_ptr)->child, env);
 		exit(status);
 	}
 	else
@@ -57,7 +57,7 @@ int	handle_logical_separator(t_node **node, int status)
 	return (0);
 }
 
-int	handle_pl(t_node **node_ptr)
+int	handle_pl(t_node **node_ptr, t_env *env)
 {
 	if (!(*node_ptr)->next)
 	{
@@ -80,23 +80,23 @@ int	handle_pl(t_node **node_ptr)
 		next_ptr = NULL;
 	if (cur)
 		cur->next = NULL;
-	status = exec_pl(pipeline_head);
+	status = exec_pl(pipeline_head, env);
 	if (cur)
 		cur->next = next_ptr;
 	*node_ptr = next_ptr;
 	return (status);
 }
 
-int	handle_bg(t_node **node_ptr)
+int	handle_bg(t_node **node_ptr, t_env *env)
 {
 	int	status;
 
-	status = exec_background(*node_ptr);
+	status = exec_background(*node_ptr, env);
 	*node_ptr = (*node_ptr)->next;
 	return (status);
 }
 
-int	exec(t_node *node)
+int	exec(t_node *node, t_env *env)
 {
 	int	status;
 
@@ -104,14 +104,14 @@ int	exec(t_node *node)
 	while (node)
 	{
 		if (node->kind == ND_SUBSHELL)
-			status = handle_subshell(&node);
+			status = handle_subshell(&node, env);
 		else if (node->separator && strcmp(node->separator, "|") == 0)
-			status = handle_pl(&node);
+			status = handle_pl(&node, env);
 		else if (node->separator && strcmp(node->separator, "&") == 0)
-			status = handle_bg(&node);
+			status = handle_bg(&node, env);
 		else
 		{
-			status = exec_cmd(node);
+			status = exec_cmd(node, env);
 			if (handle_logical_separator(&node, status))
 				break ;
 		}

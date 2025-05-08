@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/06 17:15:43 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/08 14:22:41 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "env_management.h"
 
-char	**environ = NULL;
-pid_t	g_last_bg_pid = 0;
-int		g_last_exit_status = 0;
+// char **g_env = NULL;
+// char	**environ = NULL;
+// pid_t	g_last_bg_pid = 0;
+// int		g_last_exit_status = 0;
 
 void	fatal_error(const char *msg)
 {
@@ -54,7 +55,7 @@ char	*search_path(const char *filename)
 	return (NULL);
 }
 
-int	exec_sh_c(char **argv)
+int	exec_sh_c(char **argv, t_env *env)
 {
 	char	*subcmd;
 	int		status;
@@ -72,9 +73,9 @@ int	exec_sh_c(char **argv)
 		free_token(words);
 		return (258);
 	}
-	expansion(node);
-	setup_heredoc(node);
-	status = exec(node);
+	expansion(node, env);
+	setup_heredoc(node, env);
+	status = exec(node, env);
 	free_node(node);
 	free_token(words);
 	return (status);
@@ -213,12 +214,16 @@ int	main(int argc, char **argv, char **envp)
 {
 	int			status;
 	char		*line;
+	t_env		env;
 	struct sigaction	sa;
 
 	(void)argv;
 	(void)argc;
 	init_env(envp);
-	environ = g_env;
+	env.environ = NULL;
+	env.last_bg_pid = 0;
+    env.last_exit_status = 0;
+	env.environ = g_env;
 	status = 0;
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
@@ -233,7 +238,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		if (*line)
 			add_history(line);
-		interpret(line, &status);
+		interpret(line, &status, &env);
 		free(line);
 	}
 	free_env();
