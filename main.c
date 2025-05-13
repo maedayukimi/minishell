@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 14:22:41 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/13 17:27:44 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 // char	**environ = NULL;
 // pid_t	g_last_bg_pid = 0;
 // int		g_last_exit_status = 0;
+int g_sig_subshell = 0;
 
 void	fatal_error(const char *msg)
 {
@@ -199,6 +200,7 @@ char	*get_complete_input(void)
 	while (line_ends_with_pipe(line)
 		|| ends_with_bs(line, &bs_count))
 	{
+		g_sig_subshell = 1;
 		more = readline("> ");
 		if (more == NULL)
 			break ;
@@ -219,11 +221,11 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argv;
 	(void)argc;
-	init_env(envp);
+	init_env(envp, &env);
 	env.environ = NULL;
 	env.last_bg_pid = 0;
     env.last_exit_status = 0;
-	env.environ = g_env;
+	env.environ = env.g_env;
 	status = 0;
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
@@ -241,6 +243,6 @@ int	main(int argc, char **argv, char **envp)
 		interpret(line, &status, &env);
 		free(line);
 	}
-	free_env();
+	free_env(&env);
 	return (status);
 }

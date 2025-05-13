@@ -6,13 +6,13 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 18:03:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 14:43:15 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/13 17:20:10 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern char	**g_env;
+// extern char	**g_env;
 
 static int	is_valid_echo_option(const char *str)
 {
@@ -40,17 +40,17 @@ static void	update_env(const char *key, const char *value, t_env *env)
 
 	key_len = strlen(key);
 	i = 0;
-	while (g_env && g_env[i])
+	while (env->g_env && env->g_env[i])
 	{
-		if (strncmp(g_env[i], key, key_len) == 0 && g_env[i][key_len] == '=')
+		if (strncmp(env->g_env[i], key, key_len) == 0 && env->g_env[i][key_len] == '=')
 		{
 			new_entry = malloc(key_len + 1 + strlen(value) + 1);
 			if (!new_entry)
 				fatal_error("malloc failed in update_env");
 			sprintf(new_entry, "%s=%s", key, value);
-			free(g_env[i]);
-			g_env[i] = new_entry;
-			env->environ = g_env;
+			free(env->g_env[i]);
+			env->g_env[i] = new_entry;
+			env->environ = env->g_env;
 			return ;
 		}
 		i++;
@@ -62,7 +62,7 @@ static void	update_env(const char *key, const char *value, t_env *env)
 	i = 0;
 	while (i < count)
 	{
-		new_env[i] = g_env[i];
+		new_env[i] = env->g_env[i];
 		i++;
 	}
 	new_entry = malloc(key_len + 1 + strlen(value) + 1);
@@ -71,10 +71,10 @@ static void	update_env(const char *key, const char *value, t_env *env)
 	sprintf(new_entry, "%s=%s", key, value);
 	new_env[count] = new_entry;
 	new_env[count + 1] = NULL;
-	if (g_env)
-		free(g_env);
-	g_env = new_env;
-	env->environ = g_env;
+	if (env->g_env)
+		free(env->g_env);
+	env->g_env = new_env;
+	env->environ = env->g_env;
 }
 
 static void	remove_env(const char *key, t_env *env)
@@ -89,16 +89,16 @@ static void	remove_env(const char *key, t_env *env)
 	key_len = strlen(key);
 	count = 0;
 	i = 0;
-	while (g_env && g_env[i])
+	while (env->g_env && env->g_env[i])
 	{
 		count++;
 		i++;
 	}
 	index_to_remove = -1;
 	i = 0;
-	while (g_env && g_env[i])
+	while (env->g_env && env->g_env[i])
 	{
-		if (strncmp(g_env[i], key, key_len) == 0 && g_env[i][key_len] == '=')
+		if (strncmp(env->g_env[i], key, key_len) == 0 && env->g_env[i][key_len] == '=')
 		{
 			index_to_remove = i;
 			break ;
@@ -107,26 +107,26 @@ static void	remove_env(const char *key, t_env *env)
 	}
 	if (index_to_remove == -1)
 		return ;
-	free(g_env[index_to_remove]);
+	free(env->g_env[index_to_remove]);
 	new_env = malloc(sizeof(char *) * (count));
 	if (!new_env)
 		fatal_error("malloc failed in remove_env");
 	i = 0;
 	j = 0;
-	while (g_env[i])
+	while (env->g_env[i])
 	{
 		if (i == index_to_remove)
 		{
 			i++;
 			continue ;
 		}
-		new_env[j++] = g_env[i];
+		new_env[j++] = env->g_env[i];
 		i++;
 	}
 	new_env[j] = NULL;
-	free(g_env);
-	g_env = new_env;
-	env->environ = g_env;
+	free(env->g_env);
+	env->g_env = new_env;
+	env->environ = env->g_env;
 }
 
 static char	*interpret_escapes(const char *str)
@@ -279,9 +279,9 @@ static int	builtin_export(char **argv, t_env *env)
 	if (!argv[1])
 	{
 		j = 0;
-		while (g_env && g_env[j])
+		while (env->g_env && env->g_env[j])
 		{
-			printf("declare -x %s\n", g_env[j]);
+			printf("declare -x %s\n", env->g_env[j]);
 			j++;
 		}
 		return (0);
@@ -320,7 +320,7 @@ static int	builtin_unset(char **argv, t_env *env)
 		unsetenv(argv[i]);
 		i++;
 	}
-	env->environ = g_env;
+	env->environ = env->g_env;
 	return (0);
 }
 

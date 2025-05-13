@@ -3,17 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:20:13 by mawako            #+#    #+#             */
-/*   Updated: 2025/04/11 14:19:35 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/13 17:02:41 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+extern int g_sig_subshell;
 
 void	sigint_handler(int signum)
 {
+	if (g_sig_subshell)
+	{
+		printf("minishell: syntax error near unexpected token `newline'\n");
+		exit(1);
+	}
 	(void)signum;
 	write(1, "\n", 1);
 	rl_on_new_line();
