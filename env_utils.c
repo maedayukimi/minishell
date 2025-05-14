@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 19:10:12 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 13:46:30 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/14 17:46:42 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 char	*get_env_value(const char *name, t_env *env)
 {
-	// extern char	**environ;
 	int			i;
 	int			len;
 
