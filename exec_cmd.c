@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:33:55 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 17:36:54 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/14 17:00:19 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ static int	exec_parent(char **argv, pid_t pid)
 	return (1);
 }
 
-static int	handle_sh_builtin(t_node *node, char **argv, int *handle, t_env *env)
+static int	handle_sh_builtin(t_node *node, char
+			**argv, int *handle, t_env *env)
 {
 	int	status;
 
@@ -97,10 +98,7 @@ int	exec_cmd(t_node *node, t_env *env)
 	}
 	status = handle_sh_builtin(node, argv, &handle, env);
 	if (handle)
-	{
-		env->last_exit_status = status;
-		return (status);
-	}
+		return (env->last_exit_status = status, status);
 	pid = fork();
 	if (pid < 0)
 		fatal_error("fork failed");

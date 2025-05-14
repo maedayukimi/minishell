@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 19:08:04 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 13:34:10 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/14 16:57:51 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,5 @@ int	is_var_char(char c)
 
 char	*expand_exit_status(t_env *env)
 {
-	// extern int	g_last_exit_status;
-
 	return (ft_itoa(env->last_exit_status));
 }

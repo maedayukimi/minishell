@@ -6,13 +6,11 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:22:06 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/13 17:20:48 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/14 17:06:08 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "env_management.h"
-
-// char	**g_env = NULL;
 
 void	init_env(char **envp, t_env *env)
 {
@@ -77,7 +75,8 @@ int	my_setenv(const char *name, const char *value, int overwrite, t_env *env)
 		while (env->g_env[i])
 		{
 			count++;
-			if (strncmp(env->g_env[i], name, len) == 0 && env->g_env[i][len] == '=')
+			if (strncmp(env->g_env[i], name,
+					len) == 0 && env->g_env[i][len] == '=')
 			{
 				if (!overwrite)
 					return (0);

@@ -6,12 +6,13 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:20:13 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/13 17:02:41 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/14 16:55:51 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-extern int g_sig_subshell;
+
+extern int	g_sig_subshell;
 
 void	sigint_handler(int signum)
 {

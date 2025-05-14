@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 14:44:15 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/14 17:07:38 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,8 @@ void		free_redirects(t_redirect *redir);
 void		free_argv(char **argv);
 void		free_strs(char **strs);
 char		**ft_split(char const *s, char c);
-int			read_heredoc(const char *delimiter, int expand, char *heredoc_file, t_env *env);
+int			read_heredoc(const char *delimiter, int expand,
+				char *heredoc_file, t_env *env);
 char		*expand_variables(const char *str, t_env *env);
 char		*ft_itoa(int n);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
@@ -162,7 +163,8 @@ void		cleanup_pipes(int **pipes, int n);
 void		setup_dup(int i, int n, int **pipes);
 void		close_all_pipes(int n, int **pipes);
 void		execute_command(t_node *node, t_env *env);
-void		setup_pipe_child(t_node *node, int i, int n, int **pipes, t_env *env);
+void		setup_pipe_child(t_node *node, int i,
+				int n, int **pipes, t_env *env);
 pid_t		*setup_pipe_children(t_node *head, int n, int **pipes, t_env *env);
 int			wait_pl_children(pid_t *pids, int n);
 int			exec_pl(t_node *head, t_env *env);

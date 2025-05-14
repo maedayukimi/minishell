@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 18:05:29 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 14:06:53 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/14 16:58:13 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ static void	expand_and_write(int fd, char *line, int expand, t_env *env)
 	}
 }
 
-int	read_heredoc(const char *delimiter, int expand, char *heredoc_file, t_env *env)
+int	read_heredoc(const char *delimiter, int expand, char
+			*heredoc_file, t_env *env)
 {
 	char	*line;
 	int		fd;

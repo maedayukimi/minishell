@@ -6,18 +6,14 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/13 17:27:44 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/14 17:02:37 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "env_management.h"
 
-// char **g_env = NULL;
-// char	**environ = NULL;
-// pid_t	g_last_bg_pid = 0;
-// int		g_last_exit_status = 0;
-int g_sig_subshell = 0;
+int	g_sig_subshell = 0;
 
 void	fatal_error(const char *msg)
 {
