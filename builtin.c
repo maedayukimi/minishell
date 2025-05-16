@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 18:03:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/13 17:20:10 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/16 11:36:08 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static void	update_env(const char *key, const char *value, t_env *env)
 	i = 0;
 	while (i < count)
 	{
-		new_env[i] = env->g_env[i];
+		new_env[i] = strdup(env->g_env[i]);
 		i++;
 	}
 	new_entry = malloc(key_len + 1 + strlen(value) + 1);

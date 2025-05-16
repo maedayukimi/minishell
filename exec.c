@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:42:10 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 14:20:57 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/16 11:34:21 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ static int	process_exec_node(t_node **node_ptr, int *exit_loop, t_env *env)
 	{
 		sep = node->separator;
 		status = handle_subshell(node_ptr, env);
+		if (sep)
 		{
 			if (!strcmp(sep, "&&") && status != 0)
 				*exit_loop = 1;
