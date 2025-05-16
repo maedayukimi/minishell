@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:04:53 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 14:20:01 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/16 11:54:37 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,38 +32,40 @@ void	execute_command(t_node *node, t_env *env)
 	}
 }
 
-void	setup_pipe_child(t_node *node, int i, int n, int **pipes, t_env *env)
+void	setup_pipe_child(t_data *data, int i, int n, int **pipes)
 {
 	setup_dup(i, n, pipes);
 	close_all_pipes(n, pipes);
-	if (node->redirects)
+	if (data->node->redirects)
 	{
-		if (open_redir_file(node->redirects) < 0)
+		if (open_redir_file(data->node->redirects) < 0)
 			exit(1);
-		do_redirect(node->redirects);
+		do_redirect(data->node->redirects);
 	}
-	execute_command(node, env);
+	execute_command(data->node, data->env);
 }
 
 pid_t	*setup_pipe_children(t_node *head, int n, int **pipes, t_env *env)
 {
 	pid_t	*pids;
-	t_node	*cur;
+	// t_node	*cur;
+	t_data  data;
 	int		i;
 
 	i = 0;
 	pids = malloc(sizeof(pid_t) * n);
 	if (!pids)
 		fatal_error("malloc failed");
-	cur = head;
+	data.node = head;
+	data.env = env;
 	while (i < n)
 	{
 		pids[i] = fork();
 		if (pids[i] < 0)
 			fatal_error("fork failed");
 		if (pids[i] == 0)
-			setup_pipe_child(cur, i, n, pipes, env);
-		cur = cur->next;
+			setup_pipe_child(&data, i, n, pipes);
+		data.node = data.node->next;
 		i++;
 	}
 	return (pids);

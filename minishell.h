@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/14 17:07:38 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/16 11:53:25 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,11 @@ typedef struct s_node
 	struct s_node		*child;
 }	t_node;
 
+typedef struct s_data {
+	t_node *node;
+	t_env *env;
+} t_data;
+
 void		fatal_error(const char *msg) __attribute__((noreturn));
 int			is_builtin(char *cmd);
 int			exec_builtin(char **argv, t_env *env);
@@ -163,8 +168,8 @@ void		cleanup_pipes(int **pipes, int n);
 void		setup_dup(int i, int n, int **pipes);
 void		close_all_pipes(int n, int **pipes);
 void		execute_command(t_node *node, t_env *env);
-void		setup_pipe_child(t_node *node, int i,
-				int n, int **pipes, t_env *env);
+void		setup_pipe_child(t_data *data, int i,
+				int n, int **pipes);
 pid_t		*setup_pipe_children(t_node *head, int n, int **pipes, t_env *env);
 int			wait_pl_children(pid_t *pids, int n);
 int			exec_pl(t_node *head, t_env *env);
