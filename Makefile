@@ -14,7 +14,8 @@ SRCS	= main.c parse.c tokenizer.c free_utils.c \
 		  env_utils.c pl_exec.c pl_utils.c \
 		  bg_exec.c exec.c exec_cmd.c exec_simple.c interpret.c \
 		  signals.c redirect_init.c redirect_primary.c redirect_primary2.c \
-		  redirect_secondary.c redirect_sets.c redirect_parsers.c
+		  redirect_secondary.c redirect_sets.c redirect_parsers.c \
+		  node_utils.c parse_utils.c parse_group_command.c parse_simple_command.c
 
 OBJS	= $(SRCS:.c=.o)
 
