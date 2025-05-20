@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 16:04:53 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/16 11:54:37 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/20 17:53:43 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ void	setup_pipe_child(t_data *data, int i, int n, int **pipes)
 pid_t	*setup_pipe_children(t_node *head, int n, int **pipes, t_env *env)
 {
 	pid_t	*pids;
-	// t_node	*cur;
 	t_data  data;
 	int		i;
 

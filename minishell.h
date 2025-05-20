@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/16 11:53:25 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/20 18:44:49 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,11 @@ typedef struct s_node
 	struct s_node		*child;
 }	t_node;
 
-typedef struct s_data {
-	t_node *node;
-	t_env *env;
-} t_data;
+typedef struct s_data
+{
+	t_node	*node;
+	t_env	*env;
+}	t_data;
 
 void		fatal_error(const char *msg) __attribute__((noreturn));
 int			is_builtin(char *cmd);
@@ -159,7 +160,7 @@ int			is_var_char(char c);
 char		*expand_exit_status(t_env *env);
 char		*get_shell_pid_str(void);
 char		*get_env_value(const char *name, t_env *env);
-void		sigint_handler(int);
+void		sigint_handler(int sig);
 void		sigchld_handler(int sig);
 void		flush_stdin(void);
 int			count_pl_nodes(t_node *head);
@@ -197,5 +198,12 @@ void		set_redir_type(t_redirect *r, char *type);
 int			set_redir2_type(t_redirect *r, char *type);
 t_redirect	*redirect_type(t_token **rest, t_token *tok, char *type);
 t_redirect	*redirect_type2(t_token **rest, t_token *tok, char *type);
+t_node		*parse_group_command(t_token **rest);
+t_node		*parse_simple_command(t_token **rest);
+int			is_control_op(t_token *tok);
+void		append_node(t_node **nodes, t_node *node);
+int			is_fd_dup_op(const char *op);
+void		append_redirect(t_redirect **list, t_redirect *new_redir);
+int			is_redirect_op(t_token *tok);
 
 #endif

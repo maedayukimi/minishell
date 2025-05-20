@@ -6,14 +6,11 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:27 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/08 13:58:31 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/20 18:46:55 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// extern int	g_exit_status;
-// extern int	g_last_exit_status;
 
 void	append_char(char **s, char c)
 {
