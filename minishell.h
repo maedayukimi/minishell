@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/20 18:44:49 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/21 20:38:21 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,9 @@ typedef struct s_data
 {
 	t_node	*node;
 	t_env	*env;
+	char *const	g_redirs[];
+	
 }	t_data;
-
 void		fatal_error(const char *msg) __attribute__((noreturn));
 int			is_builtin(char *cmd);
 int			exec_builtin(char **argv, t_env *env);
@@ -129,6 +130,7 @@ t_token		*word_func(char **rest, char *line);
 void		expansion(t_node *node, t_env *env);
 void		quote_removal(t_node *node, t_env *env);
 void		remove_quote(t_token *tok, t_env *env);
+char		*remove_quote_word(char *word);
 char		*find_env(char *p);
 char		*ft_strjoin(const char *s1, const char *s2);
 t_node		*new_node(t_node_kind kind);
@@ -205,5 +207,6 @@ void		append_node(t_node **nodes, t_node *node);
 int			is_fd_dup_op(const char *op);
 void		append_redirect(t_redirect **list, t_redirect *new_redir);
 int			is_redirect_op(t_token *tok);
+char		*get_complete_input(void);
 
 #endif

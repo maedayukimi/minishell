@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 18:03:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/16 11:36:08 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/21 20:30:44 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ static void	update_env(const char *key, const char *value, t_env *env)
 			new_entry = malloc(key_len + 1 + strlen(value) + 1);
 			if (!new_entry)
 				fatal_error("malloc failed in update_env");
-			sprintf(new_entry, "%s=%s", key, value);
+			// sprintf(new_entry, "%s=%s", key, value);
+			ft_sprintf(new_entry, "%s=%s", key, value);
 			free(env->g_env[i]);
 			env->g_env[i] = new_entry;
 			env->environ = env->g_env;
@@ -68,7 +69,8 @@ static void	update_env(const char *key, const char *value, t_env *env)
 	new_entry = malloc(key_len + 1 + strlen(value) + 1);
 	if (!new_entry)
 		fatal_error("malloc failed in update_env");
-	sprintf(new_entry, "%s=%s", key, value);
+	// sprintf(new_entry, "%s=%s", key, value);
+	ft_sprintf(new_entry, "%s=%s", key, value);
 	new_env[count] = new_entry;
 	new_env[count + 1] = NULL;
 	if (env->g_env)
