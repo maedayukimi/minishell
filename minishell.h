@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/21 20:38:21 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/22 14:13:07 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ typedef struct s_data
 {
 	t_node	*node;
 	t_env	*env;
-	char *const	g_redirs[];
+	// char *const	g_redirs[];
 	
 }	t_data;
 void		fatal_error(const char *msg) __attribute__((noreturn));
@@ -148,6 +148,8 @@ int			read_heredoc(const char *delimiter, int expand,
 char		*expand_variables(const char *str, t_env *env);
 char		*ft_itoa(int n);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
+size_t		ft_strlen(const char *s);
+void		ft_dprintf(int fd, const char *fmt, const char *s1, const char *s2);
 int			open_redir_file(t_redirect *redir);
 void		do_redirect(t_redirect *redir);
 void		reset_redirect(t_redirect *redir);

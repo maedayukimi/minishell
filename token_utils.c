@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:17 by mawako            #+#    #+#             */
-/*   Updated: 2025/03/27 19:08:22 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/22 14:17:14 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	is_word(const char *s)
 
 void	tokenize_error(const char *location, char **rest, char *line)
 {
-	dprintf(STDERR_FILENO, "minishell: syntax error near %s\n", location);
+	ft_dprintf(STDERR_FILENO, "minishell: syntax error near %s\n", location, NULL);
 	while (*line)
 		line++;
 	*rest = line;

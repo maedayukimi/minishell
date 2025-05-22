@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 18:03:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/21 20:30:44 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/22 14:01:45 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,7 +225,7 @@ static int	builtin_cd(char **argv)
 		home = getenv("HOME");
 		if (!home)
 		{
-			fprintf(stderr, "cd: HOME not set\n");
+			dprintf(STDERR_FILENO, "cd: HOME not set\n");
 			return (1);
 		}
 		if (chdir(home) != 0)
@@ -331,7 +331,7 @@ static int	builtin_exit(char **argv)
 	int	exit_status;
 
 	exit_status = 0;
-	fprintf(stderr, "exit\n");
+	dprintf(STDERR_FILENO, "exit\n");
 	if (argv[1])
 		exit_status = atoi(argv[1]);
 	exit(exit_status);

@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:20:13 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/14 16:55:51 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/22 14:14:18 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	sigint_handler(int signum)
 {
 	if (g_sig_subshell)
 	{
-		printf("minishell: syntax error near unexpected token `newline'\n");
+		ft_dprintf(STDERR_FILENO,"minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
 		exit(1);
 	}
 	(void)signum;

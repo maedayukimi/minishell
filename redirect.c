@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:46 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/07 19:33:17 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/22 14:17:39 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	open_redir_file(t_redirect *redir)
 			redir->filefd = open(redir->word, flags, mode);
 		if (redir->filefd < 0)
 		{
-			fprintf(stderr, "minishell: %s: %s\n",
+			ft_dprintf(STDERR_FILENO, "minishell: %s: %s\n",
 				redir->word, strerror(errno));
 			return (-1);
 		}

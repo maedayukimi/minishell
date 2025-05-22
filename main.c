@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 19:38:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/21 15:42:45 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/22 14:24:58 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,16 @@ int	g_sig_subshell = 0;
 
 void	fatal_error(const char *msg)
 {
-	fprintf(stderr, "Fatal error: %s\n", msg);
+	ft_dprintf(STDERR_FILENO, "Fatal error: %s\n", msg, NULL);
+	// dprintf(STDERR_FILENO, "Fatal error: %s\n", msg);
 	exit(1);
 }
+
+// int main(void)
+// {
+// 	fatal_error("test dprintf");
+// 	return 0;
+// }
 
 int	exec_sh_c(char **argv, t_env *env)
 {
@@ -46,26 +53,6 @@ int	exec_sh_c(char **argv, t_env *env)
 	free_token(words);
 	return (status);
 }
-
-// int	check_quote(const char *line)
-// {
-// 	int	i;
-// 	int	sq;
-// 	int	dq;
-
-// 	i = 0;
-// 	sq = 0;
-// 	dq = 0;
-// 	while (line[i])
-// 	{
-// 		if (line[i] == '\'' && !dq)
-// 			sq = !sq;
-// 		else if (line[i] == '"' && !sq)
-// 			dq = !dq;
-// 		i++;
-// 	}
-// 	return (!sq && !dq);
-// }
 
 void	set_init(char **envp, t_env *env)
 {
