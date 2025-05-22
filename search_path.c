@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 15:41:51 by shuu              #+#    #+#             */
-/*   Updated: 2025/05/21 20:33:14 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/22 21:18:08 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ static char	*check_full_path(char **paths, const char *filename)
 		full_path = malloc(strlen(paths[i]) + strlen(filename) + 2);
 		if (!full_path)
 			break ;
-        // sprintf(full_path, "%s=%s", paths[i], filename);
 		ft_sprintf(full_path, "%s/%s", paths[i], filename);
 		if (access(full_path, X_OK) == 0)
 			return (full_path);
