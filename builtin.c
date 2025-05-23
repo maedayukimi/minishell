@@ -6,208 +6,241 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 18:03:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/23 18:17:49 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/23 20:12:13 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_valid_echo_option(const char *str)
+static int	env_size(char **envp)
 {
 	int	i;
 
-	if (!str || str[0] != '-' || !str[1])
-		return (0);
-	i = 1;
-	while (str[i])
-	{
-		if (str[i] != 'n' && str[i] != 'e' && str[i] != 'E')
-			return (0);
+	i = 0;
+	while (envp && envp[i])
 		i++;
-	}
-	return (1);
+	return (i);
 }
 
-static void	update_env(const char *key, const char *value, t_env *env)
+static int	env_index(char **envp, const char *key)
 {
-	int		key_len;
+	int	i;
+	int	len;
+
+	i = 0;
+	len = ft_strlen(key);
+	while (envp && envp[i])
+	{
+		if (strncmp(envp[i], key, len) == 0 && envp[i][len] == '=')
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+static char	*make_env_entry(const char *key, const char *value)
+{
+	char	*e;
+	int		len;
+
+	len = ft_strlen(key) + ft_strlen(value) + 2;
+	e = malloc(len);
+	if (!e)
+		fatal_error("malloc failed in make_env_entry");
+	ft_sprintf(e, "%s=%s", key, value);
+	return (e);
+}
+
+static char	**extend_env_array(char **envp, char *entry)
+{
+	char	**ne;
+	int		n;
 	int		i;
-	char	*new_entry;
-	char	**new_env;
-	int		count;
 
-	key_len = strlen(key);
+	n = env_size(envp);
+	ne = malloc(sizeof(char *) * (n + 2));
+	if (!ne)
+		fatal_error("malloc failed in extend_env_array");
 	i = 0;
-	while (env->g_env && env->g_env[i])
+	while (i < n)
 	{
-		if (strncmp(env->g_env[i], key, key_len) == 0 && env->g_env[i][key_len] == '=')
-		{
-			new_entry = malloc(key_len + 1 + strlen(value) + 1);
-			if (!new_entry)
-				fatal_error("malloc failed in update_env");
-			ft_sprintf(new_entry, "%s=%s", key, value);
-			free(env->g_env[i]);
-			env->g_env[i] = new_entry;
-			env->environ = env->g_env;
-			return ;
-		}
+		ne[i] = envp[i];
 		i++;
 	}
-	count = i;
-	new_env = malloc(sizeof(char *) * (count + 2));
-	if (!new_env)
-		fatal_error("malloc failed in update_env");
-	i = 0;
-	while (i < count)
-	{
-		new_env[i] = strdup(env->g_env[i]);
-		i++;
-	}
-	new_entry = malloc(key_len + 1 + strlen(value) + 1);
-	if (!new_entry)
-		fatal_error("malloc failed in update_env");
-	ft_sprintf(new_entry, "%s=%s", key, value);
-	new_env[count] = new_entry;
-	new_env[count + 1] = NULL;
-	if (env->g_env)
-		free(env->g_env);
-	env->g_env = new_env;
-	env->environ = env->g_env;
+	ne[i] = entry;
+	i++;
+	ne[i] = NULL;
+	return (ne);
 }
 
-static void	remove_env(const char *key, t_env *env)
+static char	**delete_env_array(char **envp, int idx)
 {
-	int		key_len;
-	int		i;
-	int		j;
-	char	**new_env;
-	int		count;
-	int		index_to_remove;
-
-	key_len = strlen(key);
-	count = 0;
-	i = 0;
-	while (env->g_env && env->g_env[i])
-	{
-		count++;
-		i++;
-	}
-	index_to_remove = -1;
-	i = 0;
-	while (env->g_env && env->g_env[i])
-	{
-		if (strncmp(env->g_env[i], key, key_len) == 0 && env->g_env[i][key_len] == '=')
-		{
-			index_to_remove = i;
-			break ;
-		}
-		i++;
-	}
-	if (index_to_remove == -1)
-		return ;
-	free(env->g_env[index_to_remove]);
-	new_env = malloc(sizeof(char *) * (count));
-	if (!new_env)
-		fatal_error("malloc failed in remove_env");
-	i = 0;
-	j = 0;
-	while (env->g_env[i])
-	{
-		if (i == index_to_remove)
-		{
-			i++;
-			continue ;
-		}
-		new_env[j++] = env->g_env[i];
-		i++;
-	}
-	new_env[j] = NULL;
-	free(env->g_env);
-	env->g_env = new_env;
-	env->environ = env->g_env;
-}
-
-static char	*interpret_escapes(const char *str)
-{
-	size_t	len;
-	char	*buf;
-	size_t	i;
-	size_t	j;
-
-	len = strlen(str);
-	buf = malloc(len * 2 + 1);
-	i = 0;
-	j = 0;
-	if (!buf)
-		return (NULL);
-	while (str[i])
-	{
-		if (str[i] == '\\')
-		{
-			i++;
-			if (str[i] == 'n')
-				buf[j++] = '\n';
-			else if (str[i] == 't')
-				buf[j++] = '\t';
-			else if (str[i] == 'r')
-				buf[j++] = '\r';
-			else if (str[i] == '\\')
-				buf[j++] = '\\';
-			else
-			{
-				buf[j++] = '\\';
-				if (str[i])
-					buf[j++] = str[i];
-			}
-			if (str[i])
-				i++;
-		}
-		else
-			buf[j++] = str[i++];
-	}
-	buf[j] = '\0';
-	return (buf);
-}
-
-static int	builtin_echo(char **argv)
-{
+	char	**ne;
+	int		n;
 	int		i;
 	int		j;
-	int		newline;
-	int		interpret;
-	char	*processed;
 
-	i = 1;
-	newline = 1;
-	interpret = 0;
-	if (argv[1] && is_valid_echo_option(argv[1]))
+	n = env_size(envp);
+	ne = malloc(sizeof(char *) * n);
+	if (!ne)
+		fatal_error("malloc failed in delete_env_array");
+	i = 0;
+	j = 0;
+	while (i < n)
 	{
-		j = 1;
-		while (argv[1][j])
+		if (i != idx)
 		{
-			if (argv[1][j] == 'n')
-				newline = 0;
-			else if (argv[1][j] == 'e')
-				interpret = 1;
+			ne[j] = envp[i];
 			j++;
 		}
 		i++;
 	}
-	while (argv[i])
+	ne[j] = NULL;
+	return (ne);
+}
+
+void	update_env(const char *k, const char *v, t_env *e)
+{
+	int		idx;
+	char	*ent;
+	char	**ne;
+
+	idx = env_index(e->g_env, k);
+	ent = make_env_entry(k, v);
+	if (idx >= 0)
 	{
-		if (interpret)
+		free(e->g_env[idx]);
+		e->g_env[idx] = ent;
+	}
+	else
+	{
+		ne = extend_env_array(e->g_env, ent);
+		free(e->g_env);
+		e->g_env = ne;
+	}
+	e->environ = e->g_env;
+}
+
+void	remove_env(const char *k, t_env *e)
+{
+	int		idx;
+	char	**ne;
+
+	idx = env_index(e->g_env, k);
+	if (idx < 0)
+		return ;
+	free(e->g_env[idx]);
+	ne = delete_env_array(e->g_env, idx);
+	free(e->g_env);
+	e->g_env = ne;
+	e->environ = e->g_env;
+}
+
+static char	escape_char(char c)
+{
+	if (c == 'n')
+		return ('\n');
+	if (c == 't')
+		return ('\t');
+	if (c == 'r')
+		return ('\r');
+	if (c == '\\')
+		return ('\\');
+	return (c);
+}
+
+static char	next_escaped_char(const char *s, size_t *i)
+{
+	char	c;
+
+	if (s[*i] == '\\' && s[*i + 1])
+	{
+		*i += 1;
+		c = escape_char(s[*i]);
+		*i += 1;
+	}
+	else
+	{
+		c = s[*i];
+		*i += 1;
+	}
+	return (c);
+}
+
+static char	*interpret_escapes(const char *s)
+{
+	size_t	i;
+	size_t	j;
+	size_t	n;
+	char	*b;
+	char	c;
+
+	i = 0;
+	j = 0;
+	n = ft_strlen(s) * 2 + 1;
+	b = malloc(n);
+	if (!b)
+		fatal_error("malloc failed in interpret_escapes");
+	while (s[i])
+	{
+		c = next_escaped_char(s, &i);
+		b[j++] = c;
+	}
+	b[j] = '\0';
+	return (b);
+}
+
+static int	parse_echo_opt(char **a, int *nl, int *esc)
+{
+	int	j;
+
+	*nl = 1;
+	*esc = 0;
+	if (!a[1] || a[1][0] != '-' || !a[1][1])
+		return (1);
+	j = 1;
+	while (a[1][j])
+	{
+		if (a[1][j] == 'n')
+			*nl = 0;
+		else if (a[1][j] == 'e')
+			*esc = 1;
+		j++;
+	}
+	return (2);
+}
+
+static void	echo_print(char **a, int st, int esc)
+{
+	int		k;
+	char	*tmp;
+
+	k = st;
+	while (a[k])
+	{
+		if (k > st)
+			printf(" ");
+		if (esc)
 		{
-			processed = interpret_escapes(argv[i]);
-			printf("%s", processed);
-			free(processed);
+			tmp = interpret_escapes(a[k]);
+			printf("%s", tmp);
+			free(tmp);
 		}
 		else
-			printf("%s", argv[i]);
-		if (argv[i + 1])
-			printf(" ");
-		i++;
+			printf("%s", a[k]);
+		k++;
 	}
-	if (newline)
+}
+
+int	builtin_echo(char **a)
+{
+	int	nl;
+	int	esc;
+	int	st;
+
+	st = parse_echo_opt(a, &nl, &esc);
+	echo_print(a, st, esc);
+	if (nl)
 		printf("\n");
 	return (0);
 }
@@ -221,7 +254,7 @@ static int	builtin_cd(char **argv)
 		home = getenv("HOME");
 		if (!home)
 		{
-			ft_dprintf(STDERR_FILENO, "cd: HOME not set\n", NULL, NULL);
+			fprintf(stderr, "cd: HOME not set\n");
 			return (1);
 		}
 		if (chdir(home) != 0)
@@ -327,7 +360,7 @@ static int	builtin_exit(char **argv)
 	int	exit_status;
 
 	exit_status = 0;
-	ft_dprintf(STDERR_FILENO, "exit\n", NULL, NULL);
+	fprintf(stderr, "exit\n");
 	if (argv[1])
 		exit_status = atoi(argv[1]);
 	exit(exit_status);
