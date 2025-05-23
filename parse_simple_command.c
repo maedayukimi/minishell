@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 16:16:52 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/23 18:08:42 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/23 20:37:26 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ static int	handle_redirect(t_token **tok, t_node *node)
 	if (!(*tok)->next || (*tok)->next->kind != TK_WORD)
 	{
 		ft_dprintf(STDERR_FILENO,
-			"minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
+			"minishell: syntax error near unexpected token `newline'\n",
+			NULL, NULL);
 		free_node(node);
 		return (0);
 	}

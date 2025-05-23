@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 19:10:12 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/14 17:46:42 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/23 20:32:30 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ char	*get_env_value(const char *name, t_env *env)
 	i = 0;
 	while (env->environ[i])
 	{
-		if (strncmp(env->environ[i], name, len) == 0 && env->environ[i][len] == '=')
+		if (strncmp(env->environ[i], name, len)
+			== 0 && env->environ[i][len] == '=')
 			return (env->environ[i] + len + 1);
 		i++;
 	}

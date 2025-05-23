@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:46 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/22 14:17:39 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/23 20:36:58 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ int	open_redir_file(t_redirect *redir)
 	{
 		flags = 0;
 		mode = 0644;
-		if (redir->type == RD_OUT || redir->type == RD_OUT_ERR || redir->type == RD_SP)
+		if (redir->type == RD_OUT || redir->type
+			== RD_OUT_ERR || redir->type == RD_SP)
 			flags = O_WRONLY | O_CREAT | O_TRUNC;
 		else if (redir->type == RD_IN || redir->type == RD_HEREDOC)
 			flags = O_RDONLY;

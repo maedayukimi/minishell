@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:21:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/22 14:46:10 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/23 20:33:25 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ int	handle_pl(t_node **node_ptr, t_env *env)
 {
 	if (!(*node_ptr)->next)
 	{
-		ft_dprintf(STDERR_FILENO, "minishell: syntax error near unexpected token `|'\n", NULL, NULL);
+		ft_dprintf(STDERR_FILENO,
+			"minishell: syntax error near unexpected token `|'\n", NULL, NULL);
 		return (258);
 	}
 	int		status;

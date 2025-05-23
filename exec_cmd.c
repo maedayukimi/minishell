@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:33:55 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/22 14:45:59 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/23 20:36:05 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,15 @@ static void	exec_child(t_node *node, char **argv, t_env *env)
 	path = search_path(argv[0]);
 	if (!path)
 	{
-		ft_dprintf(STDERR_FILENO, "Fatal error: command not found\n", NULL, NULL);
+		ft_dprintf(STDERR_FILENO,
+			"Fatal error: command not found\n", NULL, NULL);
 		exit(127);
 	}
 	execve(path, argv, env->environ);
 	if (errno == EACCES)
 	{
-		ft_dprintf(STDERR_FILENO, "Fatal error: permission denied\n", NULL, NULL);
+		ft_dprintf(STDERR_FILENO,
+			"Fatal error: permission denied\n", NULL, NULL);
 		exit(126);
 	}
 	exit(1);

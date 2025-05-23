@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:04:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/23 18:07:22 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/23 20:33:50 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ static int	process_parse_token(t_token **tok, t_node **head, t_node **cur)
 
 	if ((*tok)->kind == TK_OP && strcmp((*tok)->word, ")") == 0)
 	{
-		ft_dprintf(STDERR_FILENO, "minishell: syntax error near unexpected token `)`\n", NULL, NULL);
+		ft_dprintf(STDERR_FILENO,
+			"minishell: syntax error near unexpected token `)`\n", NULL, NULL);
 		return (0);
 	}
 	if ((*tok)->kind == TK_OP && strcmp((*tok)->word, "(") == 0)
