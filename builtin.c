@@ -6,13 +6,11 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 18:03:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/22 14:45:44 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/23 18:17:49 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// extern char	**g_env;
 
 static int	is_valid_echo_option(const char *str)
 {
@@ -47,7 +45,6 @@ static void	update_env(const char *key, const char *value, t_env *env)
 			new_entry = malloc(key_len + 1 + strlen(value) + 1);
 			if (!new_entry)
 				fatal_error("malloc failed in update_env");
-			// sprintf(new_entry, "%s=%s", key, value);
 			ft_sprintf(new_entry, "%s=%s", key, value);
 			free(env->g_env[i]);
 			env->g_env[i] = new_entry;
@@ -69,7 +66,6 @@ static void	update_env(const char *key, const char *value, t_env *env)
 	new_entry = malloc(key_len + 1 + strlen(value) + 1);
 	if (!new_entry)
 		fatal_error("malloc failed in update_env");
-	// sprintf(new_entry, "%s=%s", key, value);
 	ft_sprintf(new_entry, "%s=%s", key, value);
 	new_env[count] = new_entry;
 	new_env[count + 1] = NULL;
