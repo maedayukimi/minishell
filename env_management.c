@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:22:06 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/14 17:06:08 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/21 20:31:23 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,8 @@ int	my_setenv(const char *name, const char *value, int overwrite, t_env *env)
 				new_entry = malloc(len + strlen(value) + 2);
 				if (!new_entry)
 					return (-1);
-				sprintf(new_entry, "%s=%s", name, value);
+				// sprintf(new_entry, "%s=%s", name, value);
+				ft_sprintf(new_entry, "%s=%s", name, value);
 				free(env->g_env[i]);
 				env->g_env[i] = new_entry;
 				return (0);
@@ -99,7 +100,8 @@ int	my_setenv(const char *name, const char *value, int overwrite, t_env *env)
 		new_entry = malloc(len + strlen(value) + 2);
 		if (!new_entry)
 			return (-1);
-		sprintf(new_entry, "%s=%s", name, value);
+		// sprintf(new_entry, "%s=%s", name, value);
+		ft_sprintf(new_entry, "%s=%s", name, value);
 		env->g_env[count] = new_entry;
 		env->g_env[count + 1] = NULL;
 		return (0);

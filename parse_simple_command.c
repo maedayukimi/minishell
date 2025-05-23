@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 16:16:52 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/15 16:50:25 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/23 18:08:42 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ static int	handle_fd_dup(t_token **tok, t_node *node)
 	redir = redirect_type2(tok, *tok, (*tok)->word);
 	if (!redir)
 	{
-		fprintf(stderr,
+		ft_dprintf(STDERR_FILENO,
 			"minishell: syntax error with redirection operator '%s'\n",
-			(*tok)->word);
+			(*tok)->word, NULL);
 		free_node(node);
 		return (0);
 	}
@@ -33,8 +33,8 @@ static int	handle_redirect(t_token **tok, t_node *node)
 {
 	if (!(*tok)->next || (*tok)->next->kind != TK_WORD)
 	{
-		fprintf(stderr,
-			"minishell: syntax error near unexpected token `newline'\n");
+		ft_dprintf(STDERR_FILENO,
+			"minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
 		free_node(node);
 		return (0);
 	}

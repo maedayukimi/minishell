@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:04:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/20 18:30:54 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/23 18:07:22 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 int	is_redirect(const char *word)
 {
-	int			i;
 	static char *const	redirs[] = {
 		"1>>", "2>>", ">>", "<<", "<", ">", "2>", "1>", ">&1", "1>&1",
 		"1>&2", ">&2", "2>&2", "2>&1", "&>", ">&", NULL
 	};
+	int					i;
 
 	i = 0;
 	if (!word)
@@ -38,7 +38,7 @@ static int	process_parse_token(t_token **tok, t_node **head, t_node **cur)
 
 	if ((*tok)->kind == TK_OP && strcmp((*tok)->word, ")") == 0)
 	{
-		fprintf(stderr, "minishell: syntax error near unexpected token `)`\n");
+		ft_dprintf(STDERR_FILENO, "minishell: syntax error near unexpected token `)`\n", NULL, NULL);
 		return (0);
 	}
 	if ((*tok)->kind == TK_OP && strcmp((*tok)->word, "(") == 0)

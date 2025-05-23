@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:27 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/20 18:46:55 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/23 18:05:01 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,98 +52,6 @@ char	*find_env(char *p)
 	if (!content)
 		return (NULL);
 	return (content);
-}
-
-void	remove_quote(t_token *tok, t_env *env)
-{
-	char	*new_word;
-	char	*p;
-	int		i;
-
-	if (!tok || tok->kind != TK_WORD || !tok->word)
-		return ;
-	new_word = strdup("");
-	p = tok->word;
-	i = 0;
-	while (p[i])
-	{
-		if (p[i] == SINGLE_QUOTE_CHAR)
-		{
-			i++;
-			while (p[i] && p[i] != SINGLE_QUOTE_CHAR)
-				append_char(&new_word, p[i++]);
-			if (p[i] == SINGLE_QUOTE_CHAR)
-				i++;
-		}
-		else if (p[i] == DUOBLE_QUOTE_CHAR)
-		{
-			i++;
-			while (p[i] && p[i] != DUOBLE_QUOTE_CHAR)
-			{
-				if (p[i] == '\\' && (p[i + 1] == '\\' || p[i + 1]
-						== '"' || p[i + 1] == '$' || p[i + 1] == '`'))
-				{
-					append_char(&new_word, p[i + 1]);
-					i += 2;
-				}
-				else if (p[i] == '$')
-					handle_dollar(p, &i, &new_word, env);
-				else
-					append_char(&new_word, p[i++]);
-			}
-			if (p[i] == DUOBLE_QUOTE_CHAR)
-				i++;
-		}
-		else if (p[i] == '\\')
-		{
-			if (p[i + 1])
-			{
-				append_char(&new_word, p[i + 1]);
-				i += 2;
-			}
-			else
-				i++;
-		}
-		else if (p[i] == '$')
-			handle_dollar(p, &i, &new_word, env);
-		else
-			append_char(&new_word, p[i++]);
-	}
-	free(tok->word);
-	tok->word = new_word;
-	remove_quote(tok->next, env);
-}
-
-char	*remove_quote_word(char *word)
-{
-	char	*new;
-	int		i;
-	int		j;
-	char	quote;
-
-	if (!word)
-		return (NULL);
-	new = malloc(strlen(word) + 1);
-	if (!new)
-		fatal_error("remove_quote_word: malloc");
-	i = 0;
-	j = 0;
-	while (word[i])
-	{
-		if (word[i] == '\'' || word[i] == '\"')
-		{
-			quote = word[i++];
-			while (word[i] && word[i] != quote)
-				new[j++] = word[i++];
-			if (word[i] == quote)
-				i++;
-		}
-		else
-			new[j++] = word[i++];
-	}
-	new[j] = '\0';
-	free(word);
-	return (new);
 }
 
 void	quote_removal(t_node *node, t_env *env)

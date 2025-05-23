@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_group_command.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 16:19:05 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/20 17:58:32 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/23 18:08:02 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	check_group_open(t_token **tok)
 	if (!*tok || (*tok)->kind != TK_OP
 		|| strcmp((*tok)->word, "(") != 0)
 	{
-		fprintf(stderr, "minishell: syntax error: expected '('\n");
+		ft_dprintf(STDERR_FILENO, "minishell: syntax error: expected '('\n", NULL, NULL);
 		return (0);
 	}
 	*tok = (*tok)->next;
@@ -29,7 +29,7 @@ static int	check_group_close(t_token *tok, t_node *head)
 	if (!tok || tok->kind == TK_EOF
 		|| strcmp(tok->word, ")") != 0)
 	{
-		fprintf(stderr, "minishell: syntax error: missing ')'\n");
+		ft_dprintf(STDERR_FILENO, "minishell: syntax error: missing ')'\n", NULL, NULL);
 		free_node(head);
 		return (0);
 	}
