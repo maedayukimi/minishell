@@ -18,7 +18,7 @@ SRCS	= main.c parse.c tokenizer.c free_utils.c \
 		  node_utils.c parse_utils.c parse_utils2.c parse_group_command.c \
 		  parse_simple_command.c get_complete_input.c remove_quote_word.c \
 		  search_path.c ft_sprintf.c ft_dprintf.c expansion_utils.c \
-		  ft_strlen.c
+		  ft_strlen.c exec_sep.c redirect_open.c redirect_do.c redirect_reset.c
 
 OBJS	= $(SRCS:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/23 19:57:33 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/24 21:00:38 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,8 @@ int			wait_pl_children(pid_t *pids, int n);
 int			exec_pl(t_node *head, t_env *env);
 int			exec_sh_c(char **argv, t_env *env);
 int			exec_tree(t_node *node, t_env *env);
+int			process_exec_sub(t_node **node_ptr, int *exit_loop, t_env *env);
+int			process_exec_pl(t_node **node_ptr, int *exit_loop, t_env *env);
 int			exec_background(t_node *node, t_env *env);
 int			handle_subshell(t_node **node_ptr, t_env *env);
 int			handle_pl(t_node **node_ptr, t_env *env);
@@ -196,6 +198,14 @@ void		handle_sp_stdout_stdout(t_redirect *r);
 void		handle_sp_stdout_stderr(t_redirect *r);
 void		handle_sp_stderr_stdout(t_redirect *r);
 void		handle_sp_stderr_stderr(t_redirect *r);
+void		set_flags_fd(t_redirect *redir, int flags, mode_t mode);
+void		do_out_in_append_out(t_redirect *redir);
+void		do_sp(t_redirect *redir);
+void		do_out_err(t_redirect *redir);
+void		do_heredoc(t_redirect *redir);
+void		reset_in_out_append_heredoc(t_redirect *redir);
+void		reset_sp(t_redirect *redir);
+void		reset_out_err(t_redirect *redir);
 void		set_redir_type(t_redirect *r, char *type);
 int			set_redir2_type(t_redirect *r, char *type);
 t_redirect	*redirect_type(t_token **rest, t_token *tok, char *type);
