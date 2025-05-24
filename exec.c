@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:42:10 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/23 20:34:41 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/24 21:01:04 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,59 +15,15 @@
 static int	process_exec_node(t_node **node_ptr, int *exit_loop, t_env *env)
 {
 	t_node	*node;
-	t_node	*tail;
 	int		status;
-	char	*sep;
-	char	*logical_sep;
 
 	node = *node_ptr;
 	status = 0;
 	*exit_loop = 0;
 	if (node->kind == ND_SUBSHELL)
-	{
-		sep = node->separator;
-		status = handle_subshell(node_ptr, env);
-		if (sep)
-		{
-			if (!strcmp(sep, "&&") && status != 0)
-				*exit_loop = 1;
-			else if (!strcmp(sep, "||") && status == 0)
-				*exit_loop = 1;
-		}
-	}
+		status = process_exec_sub(node_ptr, exit_loop, env);
 	else if (node->separator && !strcmp(node->separator, "|"))
-	{
-		if (!node->next)
-		{
-			ft_dprintf(STDERR_FILENO,
-				"minishell: syntax error near unexpected token `|'\n",
-				NULL, NULL);
-			*node_ptr = NULL;
-			return (258);
-		}
-		tail = node;
-		while (tail->separator && !strcmp(tail->separator, "|"))
-		{
-			if (!tail->next)
-			{
-				ft_dprintf(STDERR_FILENO,
-					"minishell: syntax error near unexpected token `|'\n",
-					NULL, NULL);
-				*node_ptr = NULL;
-				return (258);
-			}
-			tail = tail->next;
-		}
-		logical_sep = tail->separator;
-		status = handle_pl(node_ptr, env);
-		if (logical_sep)
-		{
-			if (!strcmp(logical_sep, "&&") && status != 0)
-				*exit_loop = 1;
-			else if (!strcmp(logical_sep, "||") && status == 0)
-				*exit_loop = 1;
-		}
-	}
+		status = process_exec_pl(node_ptr, exit_loop, env);
 	else if (node->separator && !strcmp(node->separator, "&"))
 		status = handle_bg(node_ptr, env);
 	else
