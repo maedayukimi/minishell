@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:27:28 by shuu              #+#    #+#             */
-/*   Updated: 2025/05/24 21:30:51 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/24 21:38:29 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	get_logical_sep(t_node **node_ptr, char **logical_sep)
 
 	status = 0;
 	tail = *node_ptr;
-	while (tail->separator && !strcmp(tail->separator, "|"))
+	while (tail->separator && !ft_strcmp(tail->separator, "|"))
 	{
 		if (!tail->next)
 		{
@@ -54,9 +54,9 @@ int	process_exec_pl(t_node **node_ptr, int *exit_loop, t_env *env)
 	status = handle_pl(node_ptr, env);
 	if (logical_sep)
 	{
-		if (!strcmp(logical_sep, "&&") && status != 0)
+		if (!ft_strcmp(logical_sep, "&&") && status != 0)
 			*exit_loop = 1;
-		else if (!strcmp(logical_sep, "||") && status == 0)
+		else if (!ft_strcmp(logical_sep, "||") && status == 0)
 			*exit_loop = 1;
 	}
 	return (status);
@@ -74,9 +74,9 @@ int	process_exec_sub(t_node **node_ptr, int *exit_loop, t_env *env)
 	status = handle_subshell(node_ptr, env);
 	if (sep)
 	{
-		if (!strcmp(sep, "&&") && status != 0)
+		if (!ft_strcmp(sep, "&&") && status != 0)
 			*exit_loop = 1;
-		else if (!strcmp(sep, "||") && status == 0)
+		else if (!ft_strcmp(sep, "||") && status == 0)
 			*exit_loop = 1;
 	}
 	return (status);

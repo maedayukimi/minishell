@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/24 21:00:38 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/24 21:40:01 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,7 @@ char		*expand_variables(const char *str, t_env *env);
 char		*ft_itoa(int n);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
 size_t		ft_strlen(const char *s);
+int			ft_strcmp(const char *str1, const char *str2);
 void		ft_dprintf(int fd, const char *fmt, const char *s1, const char *s2);
 int			open_redir_file(t_redirect *redir);
 void		do_redirect(t_redirect *redir);
