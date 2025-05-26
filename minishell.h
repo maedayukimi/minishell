@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/23 19:57:33 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/26 15:57:36 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,5 +209,26 @@ void		append_redirect(t_redirect **list, t_redirect *new_redir);
 int			is_redirect_op(t_token *tok);
 char		*get_complete_input(void);
 void		ft_dprintf(int fd, const char *fmt, const char *s1, const char *s2);
+int			env_size(char **envp);
+int			env_index(char **envp, const char *key);
+char		*make_env_entry(const char *key, const char *value);
+char		**extend_env_array(char **envp, char *entry);
+char		**delete_env_array(char **envp, int idx);
+void		update_env(const char *k, const char *v, t_env *e);
+void		remove_env(const char *k, t_env *e);
+char		escape_char(char c);
+char		next_escaped_char(const char *s, size_t *i);
+char		*interpret_escapes(const char *s);
+int			parse_echo_opt(char **a, int *nl, int *esc);
+void		echo_print(char **a, int st, int esc);
+int			builtin_echo(char **a);
+int			builtin_cd(char **argv);
+int			builtin_pwd(void);
+int			builtin_env(char **argv, t_env *env);
+int			builtin_export(char **argv, t_env *env);
+int			builtin_unset(char **argv, t_env *env);
+int			builtin_exit(char **argv);
+int			is_builtin(char *cmd);
+int			exec_builtin(char **argv, t_env *env);
 
 #endif
