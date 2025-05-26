@@ -1,1 +1,1 @@
-env_management.c redirect.c exec_simple.c env_utils.c token_utils.c exec.c exec_cmd.c parse.c parse_simple_command.c
+setenv.c redirect.c exec_simple.c env_utils.c token_utils.c exec.c exec_cmd.c parse.c parse_simple_command.c

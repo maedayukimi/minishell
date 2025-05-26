@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:21:22 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/26 15:51:26 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/26 21:50:49 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,37 +55,6 @@ int	handle_logical_separator(t_node **node, int status)
 	}
 	*node = (*node)->next;
 	return (0);
-}
-
-int	handle_pl(t_node **node_ptr, t_env *env)
-{
-	int		status;
-	t_node	*pipeline_head;
-	t_node	*cur;
-	t_node	*next_ptr;
-
-	if (!(*node_ptr)->next)
-	{
-		ft_dprintf(STDERR_FILENO,
-			"minishell: syntax error near unexpected token `|'\n", NULL, NULL);
-		return (258);
-	}
-	pipeline_head = *node_ptr;
-	cur = pipeline_head;
-	while (cur && cur->separator
-		&& strcmp(cur->separator, "|") == 0 && cur->next)
-		cur = cur->next;
-	if (cur)
-		next_ptr = cur->next;
-	else
-		next_ptr = NULL;
-	if (cur)
-		cur->next = NULL;
-	status = exec_pl(pipeline_head, env);
-	if (cur)
-		cur->next = next_ptr;
-	*node_ptr = next_ptr;
-	return (status);
 }
 
 int	handle_bg(t_node **node_ptr, t_env *env)

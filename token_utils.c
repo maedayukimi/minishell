@@ -6,16 +6,11 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:17 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/23 20:33:06 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/26 21:56:04 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	is_blank(char c)
-{
-	return ((c == ' ') || (c == '\t') || (c == '\n'));
-}
 
 int	consume_blank(char **rest, char *line)
 {
@@ -44,16 +39,6 @@ int	check_redirect(const char *s)
 	if (isdigit((unsigned char)s[0]) && (s[1] == '<' || s[1] == '>'))
 		return (1);
 	return (0);
-}
-
-int	is_metacharacter(char c)
-{
-	return (c && strchr("|&;()<> \t\n", c));
-}
-
-int	is_word(const char *s)
-{
-	return (*s && !is_metacharacter(*s));
 }
 
 void	tokenize_error(const char *location, char **rest, char *line)

@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/26 15:57:36 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/26 21:51:30 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,5 +230,6 @@ int			builtin_unset(char **argv, t_env *env);
 int			builtin_exit(char **argv);
 int			is_builtin(char *cmd);
 int			exec_builtin(char **argv, t_env *env);
+int			handle_pl(t_node **node_ptr, t_env *env);
 
 #endif

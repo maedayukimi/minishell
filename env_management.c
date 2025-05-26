@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_management.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/28 17:22:06 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/23 18:17:23 by mawako           ###   ########.fr       */
+/*   Created: 2025/05/26 20:19:30 by mawako            #+#    #+#             */
+/*   Updated: 2025/05/26 20:39:38 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,53 +57,17 @@ char	*my_getenv(const char *name, t_env *env)
 	return (NULL);
 }
 
-int	my_setenv(const char *name, const char *value, int overwrite, t_env *env)
+void	free_env(t_env *env)
 {
-	int		i;
-	size_t	len;
-	char	*new_entry;
-	int		count;
-	char	**new_env;
+	int	i;
 
 	i = 0;
-	count = 0;
-	if (!name || strchr(name, '='))
-		return (-1);
-	len = strlen(name);
-	if (env->g_env)
-	{
-		while (env->g_env[i])
-		{
-			count++;
-			if (strncmp(env->g_env[i], name,
-					len) == 0 && env->g_env[i][len] == '=')
-			{
-				if (!overwrite)
-					return (0);
-				new_entry = malloc(len + strlen(value) + 2);
-				if (!new_entry)
-					return (-1);
-				ft_sprintf(new_entry, "%s=%s", name, value);
-				free(env->g_env[i]);
-				env->g_env[i] = new_entry;
-				return (0);
-			}
-			i++;
-		}
-	}
-	{
-		new_env = realloc(env->g_env, (count + 2) * sizeof(char *));
-		if (!new_env)
-			return (-1);
-		env->g_env = new_env;
-		new_entry = malloc(len + strlen(value) + 2);
-		if (!new_entry)
-			return (-1);
-		ft_sprintf(new_entry, "%s=%s", name, value);
-		env->g_env[count] = new_entry;
-		env->g_env[count + 1] = NULL;
-		return (0);
-	}
+	if (!env->g_env)
+		return ;
+	while (env->g_env[i])
+		free(env->g_env[i++]);
+	free(env->g_env);
+	env->g_env = (NULL);
 }
 
 int	my_unsetenv(const char *name, t_env *env)
@@ -131,17 +95,4 @@ int	my_unsetenv(const char *name, t_env *env)
 		}
 	}
 	return (0);
-}
-
-void	free_env(t_env *env)
-{
-	int	i;
-
-	i = 0;
-	if (!env->g_env)
-		return ;
-	while (env->g_env[i])
-		free(env->g_env[i++]);
-	free(env->g_env);
-	env->g_env = (NULL);
 }
