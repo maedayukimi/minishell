@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 15:27:28 by shuu              #+#    #+#             */
-/*   Updated: 2025/05/24 21:38:29 by shuu             ###   ########.fr       */
+/*   Updated: 2025/05/24 22:43:18 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ int	process_exec_pl(t_node **node_ptr, int *exit_loop, t_env *env)
 		return (258);
 	}
 	status = get_logical_sep(node_ptr, &logical_sep);
+	if (status == 258)
+		return (258);
 	status = handle_pl(node_ptr, env);
 	if (logical_sep)
 	{

@@ -6,26 +6,16 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:33:55 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/23 20:36:05 by mawako           ###   ########.fr       */
+/*   Updated: 2025/05/27 18:29:39 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	exec_child(t_node *node, char **argv, t_env *env)
+static void	exec_child2(char **argv, t_env *env)
 {
 	char	*path;
 
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-	if (node->redirects)
-	{
-		if (open_redir_file(node->redirects) < 0)
-			exit(1);
-		do_redirect(node->redirects);
-	}
-	if (is_builtin(argv[0]))
-		exit(exec_builtin(argv, env));
 	path = search_path(argv[0]);
 	if (!path)
 	{
@@ -40,6 +30,21 @@ static void	exec_child(t_node *node, char **argv, t_env *env)
 			"Fatal error: permission denied\n", NULL, NULL);
 		exit(126);
 	}
+}
+
+static void	exec_child(t_node *node, char **argv, t_env *env)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	if (node->redirects)
+	{
+		if (open_redir_file(node->redirects) < 0)
+			exit(1);
+		do_redirect(node->redirects);
+	}
+	if (is_builtin(argv[0]))
+		exit(exec_builtin(argv, env));
+	exec_child2(argv, env);
 	exit(1);
 }
 
