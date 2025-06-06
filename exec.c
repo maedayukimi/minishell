@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 17:42:10 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/24 21:01:04 by shuu             ###   ########.fr       */
+/*   Updated: 2025/06/06 19:14:47 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@ static int	process_exec_node(t_node **node_ptr, int *exit_loop, t_env *env)
 	if (node->kind == ND_SUBSHELL)
 		status = process_exec_sub(node_ptr, exit_loop, env);
 	else if (node->separator && !strcmp(node->separator, "|"))
+	{
 		status = process_exec_pl(node_ptr, exit_loop, env);
+		env->last_exit_status = status;
+	}
 	else if (node->separator && !strcmp(node->separator, "&"))
 		status = handle_bg(node_ptr, env);
 	else
