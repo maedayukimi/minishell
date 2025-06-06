@@ -6,22 +6,22 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 22:19:05 by shuu              #+#    #+#             */
-/*   Updated: 2025/05/21 20:57:30 by shuu             ###   ########.fr       */
+/*   Updated: 2025/06/06 19:58:56 by shuu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	remove_quote_single(char *p, int *i, char *new_word)
+static void	remove_quote_single(char *p, int *i, char **new_word)
 {
 	(*i)++;
 	while (p[*i] && p[*i] != SINGLE_QUOTE_CHAR)
-		append_char(&new_word, p[(*i)++]);
+		append_char(new_word, p[(*i)++]);
 	if (p[*i] == SINGLE_QUOTE_CHAR)
 		(*i)++;
 }
 
-static void	remove_quote_double(char *p, int *i, char *new_word, t_env *env)
+static void	remove_quote_double(char *p, int *i, char **new_word, t_env *env)
 {
 	(*i)++;
 	while (p[*i] && p[*i] != DUOBLE_QUOTE_CHAR)
@@ -29,23 +29,23 @@ static void	remove_quote_double(char *p, int *i, char *new_word, t_env *env)
 		if (p[*i] == '\\' && (p[(*i) + 1] == '\\' || p[(*i) + 1]
 				== '"' || p[(*i) + 1] == '$' || p[(*i) + 1] == '`'))
 		{
-			append_char(&new_word, p[(*i) + 1]);
+			append_char(new_word, p[(*i) + 1]);
 			i += 2;
 		}
 		else if (p[*i] == '$')
-			handle_dollar(p, i, &new_word, env);
+			handle_dollar(p, i, new_word, env);
 		else
-			append_char(&new_word, p[(*i)++]);
+			append_char(new_word, p[(*i)++]);
 	}
 	if (p[*i] == DUOBLE_QUOTE_CHAR)
 		(*i)++;
 }
 
-static void	remove_quote_bs(char *p, int *i, char *new_word)
+static void	remove_quote_bs(char *p, int *i, char **new_word)
 {
 	if (p[(*i) + 1])
 	{
-		append_char(&new_word, p[(*i) + 1]);
+		append_char(new_word, p[(*i) + 1]);
 		(*i) += 2;
 	}
 	else
@@ -66,11 +66,11 @@ void	remove_quote(t_token *tok, t_env *env)
 	while (p[i])
 	{
 		if (p[i] == SINGLE_QUOTE_CHAR)
-			remove_quote_single(p, &i, new_word);
+			remove_quote_single(p, &i, &new_word);
 		else if (p[i] == DUOBLE_QUOTE_CHAR)
-			remove_quote_double(p, &i, new_word, env);
+			remove_quote_double(p, &i, &new_word, env);
 		else if (p[i] == '\\')
-			remove_quote_bs(p, &i, new_word);
+			remove_quote_bs(p, &i, &new_word);
 		else if (p[i] == '$')
 			handle_dollar(p, &i, &new_word, env);
 		else
