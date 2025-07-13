@@ -42,7 +42,7 @@ char	*remove_quote_word(char *word)
 
 	if (!word)
 		return (NULL);
-	new = malloc(strlen(word) + 1);
+	new = malloc(ft_strlen(word) + 1);
 	if (!new)
 		fatal_error("remove_quote_word: malloc");
 	removed_quote_word(new, word);

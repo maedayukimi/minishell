@@ -17,7 +17,7 @@ char	*expand_variables(const char *str, t_env *env)
 	char	*result;
 	int		i;
 
-	result = calloc(1, 1);
+	result = ft_calloc(1, 1);
 	if (!result)
 		return (NULL);
 	i = 0;

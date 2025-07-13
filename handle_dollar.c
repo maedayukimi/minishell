@@ -50,7 +50,7 @@ static void	expand_pattern4(char **result, const char *str, int *i, t_env *env)
 		(*i)++;
 	key = ft_substr(str, (unsigned int)start, *i - start);
 	val = get_env_value(key, env);
-	*result = ft_strjoin_and_free(*result, strdup(val));
+	*result = ft_strjoin_and_free(*result, ft_strdup(val));
 	free(key);
 }
 

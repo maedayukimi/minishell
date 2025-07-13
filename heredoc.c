@@ -19,10 +19,10 @@ static void	expand_and_write(int fd, char *line, int expand, t_env *env)
 	if (expand)
 		expanded = expand_variables(line, env);
 	else
-		expanded = strdup(line);
+		expanded = ft_strdup(line);
 	if (expanded)
 	{
-		write(fd, expanded, strlen(expanded));
+		write(fd, expanded, ft_strlen(expanded));
 		write(fd, "\n", 1);
 		free(expanded);
 	}
@@ -42,7 +42,7 @@ int	read_heredoc(const char *delimiter, int expand, char
 		line = readline("> ");
 		if (!line)
 			break ;
-		if (strcmp(line, delimiter) == 0)
+		if (ft_strcmp(line, delimiter) == 0)
 		{
 			free(line);
 			break ;
@@ -68,7 +68,7 @@ int	setup_heredoc(t_node *node, t_env *env)
 		{
 			snprintf(filename, sizeof(filename),
 				"/tmp/.heredoc_%d", heredoc_count++);
-			redir->heredoc_filename = strdup(filename);
+			redir->heredoc_filename = ft_strdup(filename);
 			redir->heredoc_expand = !redir->quoted;
 			read_heredoc(redir->word, redir->heredoc_expand, filename, env);
 		}

@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:05:23 by mawako            #+#    #+#             */
-/*   Updated: 2025/03/31 17:54:30 by mawako           ###   ########.fr       */
+/*   Updated: 2025/07/13 14:42:25 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ char	**allocate_argv(t_token *tok, size_t size)
 	i = 0;
 	while (tok && i < size)
 	{
-		heap[i] = (char *)malloc(sizeof(char) * (strlen(tok->word) + 1));
+		heap[i] = (char *)malloc(sizeof(char) * (ft_strlen(tok->word) + 1));
 		if (!heap[i])
 		{
 			while (i > 0)
@@ -31,7 +31,7 @@ char	**allocate_argv(t_token *tok, size_t size)
 			free(heap);
 			return (NULL);
 		}
-		strcpy(heap[i], tok->word);
+		ft_strcpy(heap[i], tok->word);
 		tok = tok->next;
 		i++;
 	}

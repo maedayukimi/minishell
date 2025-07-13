@@ -22,12 +22,12 @@ static int	process_exec_node(t_node **node_ptr, int *exit_loop, t_env *env)
 	*exit_loop = 0;
 	if (node->kind == ND_SUBSHELL)
 		status = process_exec_sub(node_ptr, exit_loop, env);
-	else if (node->separator && !strcmp(node->separator, "|"))
+	else if (node->separator && !ft_strcmp(node->separator, "|"))
 	{
 		status = process_exec_pl(node_ptr, exit_loop, env);
 		env->last_exit_status = status;
 	}
-	else if (node->separator && !strcmp(node->separator, "&"))
+	else if (node->separator && !ft_strcmp(node->separator, "&"))
 		status = handle_bg(node_ptr, env);
 	else
 	{

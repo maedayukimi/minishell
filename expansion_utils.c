@@ -60,7 +60,7 @@ void	remove_quote(t_token *tok, t_env *env)
 
 	if (!tok || tok->kind != TK_WORD || !tok->word)
 		return ;
-	new_word = strdup("");
+	new_word = ft_strdup("");
 	p = tok->word;
 	i = 0;
 	while (p[i])

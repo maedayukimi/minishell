@@ -48,7 +48,7 @@ static size_t	split_words(char **res, char const *s, char c, size_t word)
 					free(res[word]);
 				return (0);
 			}
-			strlcpy(res[word], (s + i), j - i + 2);
+			ft_strlcpy(res[word], (s + i), j - i + 2);
 			word++;
 		}
 		j++;

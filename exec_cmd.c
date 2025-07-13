@@ -71,9 +71,9 @@ static int	handle_sh_builtin(t_node *node, char
 	int	status;
 
 	*handle = 0;
-	if ((!strcmp(argv[0], "sh") || !strcmp(argv[0], "bash")
-			|| !strcmp(argv[0], "zsh")) && argv[1]
-		&& !strcmp(argv[1], "-c") && argv[2])
+	if ((!ft_strcmp(argv[0], "sh") || !ft_strcmp(argv[0], "bash")
+			|| !ft_strcmp(argv[0], "zsh")) && argv[1]
+		&& !ft_strcmp(argv[1], "-c") && argv[2])
 	{
 		status = exec_sh_c(argv, env);
 		free_argv(argv);

@@ -15,7 +15,7 @@
 static int	check_group_open(t_token **tok)
 {
 	if (!*tok || (*tok)->kind != TK_OP
-		|| strcmp((*tok)->word, "(") != 0)
+		|| ft_strcmp((*tok)->word, "(") != 0)
 	{
 		ft_dprintf(STDERR_FILENO,
 			"minishell: syntax error: expected '('\n", NULL, NULL);
@@ -28,7 +28,7 @@ static int	check_group_open(t_token **tok)
 static int	check_group_close(t_token *tok, t_node *head)
 {
 	if (!tok || tok->kind == TK_EOF
-		|| strcmp(tok->word, ")") != 0)
+		|| ft_strcmp(tok->word, ")") != 0)
 	{
 		ft_dprintf(STDERR_FILENO,
 			"minishell: syntax error: missing ')'\n", NULL, NULL);
@@ -43,7 +43,7 @@ static int	process_group_token(t_token **tok, t_node **head, t_node **cur)
 	t_node	*next;
 
 	if ((*tok)->kind == TK_OP
-		&& strcmp((*tok)->word, "(") == 0)
+		&& ft_strcmp((*tok)->word, "(") == 0)
 		next = parse_group_command(tok);
 	else
 		next = parse_simple_command(tok);
@@ -56,9 +56,9 @@ static int	process_group_token(t_token **tok, t_node **head, t_node **cur)
 	*cur = next;
 	if (is_control_op(*tok)
 		&& !((*tok)->kind == TK_OP
-			&& strcmp((*tok)->word, ")") == 0))
+			&& ft_strcmp((*tok)->word, ")") == 0))
 	{
-		(*cur)->separator = strdup((*tok)->word);
+		(*cur)->separator = ft_strdup((*tok)->word);
 		*tok = (*tok)->next;
 	}
 	return (1);
@@ -78,7 +78,7 @@ t_node	*parse_group_command(t_token **rest)
 		return (NULL);
 	while (tok && tok->kind != TK_EOF
 		&& !(tok->kind == TK_OP
-			&& strcmp(tok->word, ")") == 0))
+			&& ft_strcmp(tok->word, ")") == 0))
 	{
 		if (!process_group_token(&tok, &head, &cur))
 			return (NULL);

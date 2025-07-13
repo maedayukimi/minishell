@@ -17,7 +17,7 @@ static t_node	*detach_pipeline(t_node **head, t_node **next_out)
 	t_node	*cur;
 
 	cur = *head;
-	while (cur && cur->separator && strcmp(cur->separator, "|") == 0)
+	while (cur && cur->separator && ft_strcmp(cur->separator, "|") == 0)
 		cur = cur->next;
 	if (cur)
 	{

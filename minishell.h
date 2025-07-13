@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/06/02 16:16:02 by mawako           ###   ########.fr       */
+/*   Updated: 2025/07/13 15:42:45 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <limits.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <stddef.h>
 # include <stdio.h>
 # include <string.h>
 # include <ctype.h>
@@ -242,5 +243,17 @@ int			builtin_exit(char **argv);
 int			is_builtin(char *cmd);
 int			exec_builtin(char **argv, t_env *env);
 int			handle_pl(t_node **node_ptr, t_env *env);
+char		*ft_strdup(const char *s);
+size_t		ft_strlcpy(char *dst, const char *src, size_t size);
+char		*ft_strcpy(char *dest, const char *src);
+int			ft_strncmp(const char *s1, const char *s2, size_t n);
+void		*ft_calloc(size_t nmemb, size_t size);
+void		ft_bzero(void *s, size_t n);
+void		*ft_memset(void	*s, int c, size_t n);
+char		*ft_strchr(const char *s, int c);
+int			ft_isalnum(int c);
+void		*ft_memcpy(void *dest, const void *src, size_t n);
+int			ft_isspace(int c);
+int			ft_atoi(const char *n);
 
 #endif

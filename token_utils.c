@@ -29,7 +29,7 @@ int	startswith(const char *s, const char *keyword)
 {
 	if (!s || !keyword)
 		return (0);
-	return (strncmp(s, keyword, strlen(keyword)) == 0);
+	return (ft_strncmp(s, keyword, ft_strlen(keyword)) == 0);
 }
 
 int	check_redirect(const char *s)

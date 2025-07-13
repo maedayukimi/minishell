@@ -18,9 +18,9 @@ static int	line_ends_with_pipe(const char *line)
 {
 	size_t	i;
 
-	i = strlen(line);
+	i = ft_strlen(line);
 	while (i > 0 && (line[i - 1] == '\n'
-			|| isspace((unsigned char)line[i - 1])))
+			|| ft_isspace((unsigned char)line[i - 1])))
 		i--;
 	if (i > 0 && line[i - 1] == '|')
 		return (1);
@@ -32,9 +32,9 @@ static int	ends_with_bs(const char *line, size_t *count)
 	size_t	i;
 	size_t	c;
 
-	i = strlen(line);
+	i = ft_strlen(line);
 	while (i > 0 && (line[i - 1] == '\n'
-			|| isspace((unsigned char)line[i - 1])))
+			|| ft_isspace((unsigned char)line[i - 1])))
 		i--;
 	c = 0;
 	while (i > 0 && line[i - 1] == '\\')
@@ -54,12 +54,12 @@ static char	*join_bs_line(char *line, char *more, size_t bs_count)
 	size_t	prefix;
 	size_t	i;
 
-	prefix = strlen(line);
+	prefix = ft_strlen(line);
 	while (prefix > 0 && (line[prefix - 1] == '\n'
-			|| isspace((unsigned char)line[prefix - 1])))
+			|| ft_isspace((unsigned char)line[prefix - 1])))
 		prefix--;
 	prefix -= bs_count;
-	new = malloc(prefix + bs_count - 1 + strlen(more) + 1);
+	new = malloc(prefix + bs_count - 1 + ft_strlen(more) + 1);
 	if (new == NULL)
 		exit(EXIT_FAILURE);
 	i = 0;
@@ -68,9 +68,9 @@ static char	*join_bs_line(char *line, char *more, size_t bs_count)
 		new[prefix + i] = '\\';
 		i++;
 	}
-	memcpy(new, line, prefix);
-	memcpy(new + prefix + i, more, strlen(more));
-	new[prefix + i + strlen(more)] = '\0';
+	ft_memcpy(new, line, prefix);
+	ft_memcpy(new + prefix + i, more, ft_strlen(more));
+	new[prefix + i + ft_strlen(more)] = '\0';
 	free(line);
 	free(more);
 	return (new);
@@ -82,8 +82,8 @@ static char	*join_pipe_line(char *line, char *more)
 	size_t	len;
 	size_t	i;
 
-	len = strlen(line);
-	new = malloc(len + 1 + strlen(more) + 1);
+	len = ft_strlen(line);
+	new = malloc(len + 1 + ft_strlen(more) + 1);
 	if (new == NULL)
 		exit(EXIT_FAILURE);
 	i = 0;
@@ -93,8 +93,8 @@ static char	*join_pipe_line(char *line, char *more)
 		i++;
 	}
 	new[i++] = '\n';
-	memcpy(new + i, more, strlen(more));
-	new[i + strlen(more)] = '\0';
+	ft_memcpy(new + i, more, ft_strlen(more));
+	new[i + ft_strlen(more)] = '\0';
 	free(line);
 	free(more);
 	return (new);

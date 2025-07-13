@@ -6,11 +6,12 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:22:06 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/26 20:39:46 by mawako           ###   ########.fr       */
+/*   Updated: 2025/07/13 15:37:11 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "env_management.h"
+#include "minishell.h"
 
 static int	find_var_index(const char *name, t_env *env)
 {
@@ -19,11 +20,11 @@ static int	find_var_index(const char *name, t_env *env)
 
 	if (!name || !env->g_env)
 		return (-1);
-	len = strlen(name);
+	len = ft_strlen(name);
 	i = 0;
 	while (env->g_env[i])
 	{
-		if (!strncmp(env->g_env[i], name, len) && env->g_env[i][len] == '=')
+		if (!ft_strncmp(env->g_env[i], name, len) && env->g_env[i][len] == '=')
 			return (i);
 		i++;
 	}
@@ -35,7 +36,7 @@ static char	*make_entry(const char *name, const char *value)
 	char	*e;
 	size_t	len;
 
-	len = strlen(name) + strlen(value) + 2;
+	len = ft_strlen(name) + ft_strlen(value) + 2;
 	e = malloc(len);
 	if (!e)
 		return (NULL);
@@ -83,7 +84,7 @@ int	my_setenv(const char *name, const char *value, int overwrite, t_env *env)
 
 	idx = find_var_index(name, env);
 	entry = make_entry(name, value);
-	if (!name || strchr(name, '='))
+	if (!name || ft_strchr(name, '='))
 		return (-1);
 	if (idx >= 0)
 	{

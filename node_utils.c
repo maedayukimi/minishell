@@ -40,8 +40,8 @@ t_token	*tokdup(t_token *tok)
 
 	if (!tok)
 		return (NULL);
-	word = strdup(tok->word);
+	word = ft_strdup(tok->word);
 	if (!word)
-		fatal_error("tokdup: strdup");
+		fatal_error("tokdup: ft_strdup");
 	return (new_token(word, tok->kind));
 }

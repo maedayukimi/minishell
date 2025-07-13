@@ -16,12 +16,12 @@ int	is_fd_dup_op(const char *op)
 {
 	if (!op)
 		return (0);
-	return (!strcmp(op, ">&1")
-		|| !strcmp(op, "1>&1")
-		|| !strcmp(op, ">&2")
-		|| !strcmp(op, "1>&2")
-		|| !strcmp(op, "2>&1")
-		|| !strcmp(op, "2>&2"));
+	return (!ft_strcmp(op, ">&1")
+		|| !ft_strcmp(op, "1>&1")
+		|| !ft_strcmp(op, ">&2")
+		|| !ft_strcmp(op, "1>&2")
+		|| !ft_strcmp(op, "2>&1")
+		|| !ft_strcmp(op, "2>&2"));
 }
 
 int	is_redirect_op(t_token *tok)
@@ -36,7 +36,7 @@ int	is_redirect_op(t_token *tok)
 		return (0);
 	i = 0;
 	while (redirs[i])
-		if (!strcmp(tok->word, redirs[i++]))
+		if (!ft_strcmp(tok->word, redirs[i++]))
 			return (1);
 	return (0);
 }
@@ -45,9 +45,9 @@ int	is_control_op(t_token *tok)
 {
 	if (!tok || tok->kind != TK_OP)
 		return (0);
-	return (!strcmp(tok->word, ";")
-		|| !strcmp(tok->word, "&&")
-		|| !strcmp(tok->word, "||")
-		|| !strcmp(tok->word, "|")
-		|| !strcmp(tok->word, "&"));
+	return (!ft_strcmp(tok->word, ";")
+		|| !ft_strcmp(tok->word, "&&")
+		|| !ft_strcmp(tok->word, "||")
+		|| !ft_strcmp(tok->word, "|")
+		|| !ft_strcmp(tok->word, "&"));
 }

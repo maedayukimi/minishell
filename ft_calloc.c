@@ -1,39 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/26 16:30:29 by mawako            #+#    #+#             */
-/*   Updated: 2025/03/26 18:27:11 by mawako           ###   ########.fr       */
+/*   Created: 2024/05/29 17:36:23 by mawako            #+#    #+#             */
+/*   Updated: 2025/07/13 15:43:13 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdint.h>
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+void	*ft_calloc(size_t nmemb, size_t size)
 {
-	size_t	i;
-	char	*mem;
+	void	*mem;
 
-	i = 0;
-	if (!s)
+	if (nmemb && size > SIZE_MAX / nmemb)
 		return (NULL);
-	if (start >= ft_strlen(s))
-	{
-		mem = (char *)malloc(1);
-		if (mem)
-			mem[0] = '\0';
-		return (mem);
-	}
-	if (len > ft_strlen(s) - start)
-		len = ft_strlen(s) - start;
-	mem = (char *)malloc((len + 1) * sizeof(char));
-	if (!mem)
+	mem = malloc(nmemb * size);
+	if (mem == NULL)
 		return (NULL);
-	while (i < len)
-		mem[i++] = s[start++];
-	mem[i] = '\0';
+	ft_bzero(mem, nmemb * size);
 	return (mem);
 }

@@ -1,28 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_utils2.c                                     :+:      :+:    :+:   */
+/*   ft_isspace.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 21:56:11 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/26 21:56:27 by mawako           ###   ########.fr       */
+/*   Created: 2025/01/25 15:33:33 by mawako            #+#    #+#             */
+/*   Updated: 2025/07/13 15:40:52 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_metacharacter(char c)
+int	ft_isspace(int c)
 {
-	return (c && ft_strchr("|&;()<> \t\n", c));
-}
-
-int	is_word(const char *s)
-{
-	return (*s && !is_metacharacter(*s));
-}
-
-int	is_blank(char c)
-{
-	return ((c == ' ') || (c == '\t') || (c == '\n'));
+	if ((c >= 9 && c <= 13) || c == ' ')
+		return (c);
+	return (0);
 }

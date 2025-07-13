@@ -20,7 +20,7 @@ static char	*check_full_path(char **paths, const char *filename)
 	i = 0;
 	while (paths[i])
 	{
-		full_path = malloc(strlen(paths[i]) + strlen(filename) + 2);
+		full_path = malloc(ft_strlen(paths[i]) + ft_strlen(filename) + 2);
 		if (!full_path)
 			break ;
 		ft_sprintf(full_path, "%s/%s", paths[i], filename);
@@ -38,8 +38,8 @@ char	*search_path(const char *filename)
 	char	**paths;
 	char	*path_env;
 
-	if (!filename || strchr(filename, '/'))
-		return (strdup(filename));
+	if (!filename || ft_strchr(filename, '/'))
+		return (ft_strdup(filename));
 	path_env = getenv("PATH");
 	if (!path_env)
 		return (NULL);

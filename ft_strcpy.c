@@ -1,28 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_utils2.c                                     :+:      :+:    :+:   */
+/*   ft_strcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 21:56:11 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/26 21:56:27 by mawako           ###   ########.fr       */
+/*   Created: 2025/07/13 15:26:45 by mawako            #+#    #+#             */
+/*   Updated: 2025/07/13 15:45:00 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_metacharacter(char c)
+char	*ft_strcpy(char *dest, const char *src)
 {
-	return (c && ft_strchr("|&;()<> \t\n", c));
-}
-
-int	is_word(const char *s)
-{
-	return (*s && !is_metacharacter(*s));
-}
-
-int	is_blank(char c)
-{
-	return ((c == ' ') || (c == '\t') || (c == '\n'));
+	char	*start;
+       
+	start	= dest;
+	while (*src)
+		*dest++ = *src++;
+	*dest = '\0';
+	return (start);
 }

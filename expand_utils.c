@@ -17,11 +17,11 @@ char	*ft_strjoin_char_and_free(char *s, char c)
 	int		len;
 	char	*res;
 
-	len = strlen(s);
+	len = ft_strlen(s);
 	res = malloc(len + 2);
 	if (!res)
 		return (NULL);
-	memcpy(res, s, len);
+	ft_memcpy(res, s, len);
 	res[len] = c;
 	res[len + 1] = '\0';
 	free(s);
@@ -40,7 +40,7 @@ char	*ft_strjoin_and_free(char *s1, char *s2)
 
 int	is_var_char(char c)
 {
-	return (isalnum(c) || c == '_');
+	return (ft_isalnum(c) || c == '_');
 }
 
 char	*expand_exit_status(t_env *env)

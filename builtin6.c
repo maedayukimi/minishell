@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 22:02:57 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/26 22:05:33 by mawako           ###   ########.fr       */
+/*   Updated: 2025/07/13 15:16:31 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	process_arg(char *kv, t_env *env)
 	char	*eq;
 	char	*val;
 
-	eq = strchr(kv, '=');
+	eq = ft_strchr(kv, '=');
 	if (!eq)
 	{
 		val = getenv(kv);

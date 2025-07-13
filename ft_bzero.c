@@ -1,28 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_utils2.c                                     :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 21:56:11 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/26 21:56:27 by mawako           ###   ########.fr       */
+/*   Created: 2024/08/23 16:22:31 by mawako            #+#    #+#             */
+/*   Updated: 2025/07/13 15:31:23 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_metacharacter(char c)
+void	ft_bzero(void *s, size_t n)
 {
-	return (c && ft_strchr("|&;()<> \t\n", c));
-}
-
-int	is_word(const char *s)
-{
-	return (*s && !is_metacharacter(*s));
-}
-
-int	is_blank(char c)
-{
-	return ((c == ' ') || (c == '\t') || (c == '\n'));
+	ft_memset(s, 0, n);
 }

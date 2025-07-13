@@ -6,7 +6,7 @@
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 16:04:39 by mawako            #+#    #+#             */
-/*   Updated: 2025/05/07 18:51:53 by mawako           ###   ########.fr       */
+/*   Updated: 2025/07/13 15:14:54 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ t_token	*operator_func(char **rest, char *line)
 	{
 		if (startswith(line, operators[i]))
 		{
-			op = strdup(operators[i]);
+			op = ft_strdup(operators[i]);
 			if (!op)
-				fatal_error("operator_func: strdup");
-			*rest = line + strlen(op);
+				fatal_error("operator_func: ft_strdup");
+			*rest = line + ft_strlen(op);
 			return (new_token(op, TK_OP));
 		}
 		i++;

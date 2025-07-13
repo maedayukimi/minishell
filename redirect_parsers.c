@@ -23,7 +23,7 @@ t_redirect	*redirect_type(t_token **rest, t_token *tok, char *type)
 	if (tok->next == NULL)
 		fatal_error("redirect_type: unexpected token `newline'");
 	set_redir_type(r, type);
-	r->word = strdup(tok->next->word);
+	r->word = ft_strdup(tok->next->word);
 	*rest = tok->next->next;
 	return (r);
 }

@@ -19,13 +19,13 @@ void	append_char(char **s, char c)
 
 	size = 2;
 	if (*s)
-		size += strlen(*s);
+		size += ft_strlen(*s);
 	new = malloc(size);
 	if (!new)
 		fatal_error("append_char: malloc");
 	if (*s)
 	{
-		strlcpy(new, *s, size);
+		ft_strlcpy(new, *s, size);
 		free(*s);
 	}
 	new[size - 2] = c;

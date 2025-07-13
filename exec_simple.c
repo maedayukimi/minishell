@@ -42,12 +42,12 @@ int	handle_logical_separator(t_node **node, int status)
 {
 	if ((*node)->separator)
 	{
-		if (strcmp((*node)->separator, "&&") == 0)
+		if (ft_strcmp((*node)->separator, "&&") == 0)
 		{
 			if (status != 0)
 				return (1);
 		}
-		else if (strcmp((*node)->separator, "||") == 0)
+		else if (ft_strcmp((*node)->separator, "||") == 0)
 		{
 			if (status == 0)
 				return (1);
@@ -75,9 +75,9 @@ int	exec(t_node *node, t_env *env)
 	{
 		if (node->kind == ND_SUBSHELL)
 			status = handle_subshell(&node, env);
-		else if (node->separator && strcmp(node->separator, "|") == 0)
+		else if (node->separator && ft_strcmp(node->separator, "|") == 0)
 			status = handle_pl(&node, env);
-		else if (node->separator && strcmp(node->separator, "&") == 0)
+		else if (node->separator && ft_strcmp(node->separator, "&") == 0)
 			status = handle_bg(&node, env);
 		else
 		{

@@ -1,39 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/26 16:30:29 by mawako            #+#    #+#             */
-/*   Updated: 2025/03/26 18:27:11 by mawako           ###   ########.fr       */
+/*   Created: 2024/08/23 16:07:54 by mawako            #+#    #+#             */
+/*   Updated: 2025/07/13 15:31:37 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+void	*ft_memset(void	*s, int c, size_t n)
 {
-	size_t	i;
-	char	*mem;
+	unsigned char	*src;
 
-	i = 0;
-	if (!s)
-		return (NULL);
-	if (start >= ft_strlen(s))
+	src = (unsigned char *)s;
+	while (n--)
 	{
-		mem = (char *)malloc(1);
-		if (mem)
-			mem[0] = '\0';
-		return (mem);
+		*src = (unsigned char)c;
+		src++;
 	}
-	if (len > ft_strlen(s) - start)
-		len = ft_strlen(s) - start;
-	mem = (char *)malloc((len + 1) * sizeof(char));
-	if (!mem)
-		return (NULL);
-	while (i < len)
-		mem[i++] = s[start++];
-	mem[i] = '\0';
-	return (mem);
+	return (s);
 }

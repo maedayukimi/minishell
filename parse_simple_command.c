@@ -72,7 +72,7 @@ t_node	*parse_simple_command(t_token **rest)
 	while (tok && tok->kind != TK_EOF
 		&& !is_control_op(tok)
 		&& !(tok->kind == TK_OP
-			&& strcmp(tok->word, ")") == 0))
+			&& ft_strcmp(tok->word, ")") == 0))
 	{
 		if (!process_simple_token(&tok, node))
 			return (NULL);

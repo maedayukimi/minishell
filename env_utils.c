@@ -17,11 +17,11 @@ char	*get_env_value(const char *name, t_env *env)
 	int			i;
 	int			len;
 
-	len = strlen(name);
+	len = ft_strlen(name);
 	i = 0;
 	while (env->environ[i])
 	{
-		if (strncmp(env->environ[i], name, len)
+		if (ft_strncmp(env->environ[i], name, len)
 			== 0 && env->environ[i][len] == '=')
 			return (env->environ[i] + len + 1);
 		i++;
@@ -39,12 +39,12 @@ char	*get_shell_pid_str(void)
 
 	fd = open("/proc/self/stat", O_RDONLY);
 	if (fd < 0)
-		return (strdup("0"));
+		return (ft_strdup("0"));
 	n = read(fd, buf, 255);
 	if (n <= 0)
 	{
 		close(fd);
-		return (strdup("0"));
+		return (ft_strdup("0"));
 	}
 	buf[n] = '\0';
 	close(fd);
@@ -52,6 +52,6 @@ char	*get_shell_pid_str(void)
 	while (buf[i] && buf[i] != ' ')
 		i++;
 	buf[i] = '\0';
-	pid_str = strdup(buf);
+	pid_str = ft_strdup(buf);
 	return (pid_str);
 }

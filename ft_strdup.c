@@ -1,39 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/26 16:30:29 by mawako            #+#    #+#             */
-/*   Updated: 2025/03/26 18:27:11 by mawako           ###   ########.fr       */
+/*   Created: 2024/08/26 15:57:23 by mawako            #+#    #+#             */
+/*   Updated: 2025/07/13 15:22:51 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*ft_strdup(const char *s)
 {
 	size_t	i;
+	size_t	slen;
 	char	*mem;
+	char	*copy;
 
 	i = 0;
-	if (!s)
+	slen = ft_strlen(s) + 1;
+	mem = (char *)malloc(slen * sizeof(char));
+	if (!mem || !s)
 		return (NULL);
-	if (start >= ft_strlen(s))
+	copy = mem;
+	while (i < slen - 1)
 	{
-		mem = (char *)malloc(1);
-		if (mem)
-			mem[0] = '\0';
-		return (mem);
+		copy[i] = s[i];
+		i++;
 	}
-	if (len > ft_strlen(s) - start)
-		len = ft_strlen(s) - start;
-	mem = (char *)malloc((len + 1) * sizeof(char));
-	if (!mem)
-		return (NULL);
-	while (i < len)
-		mem[i++] = s[start++];
-	mem[i] = '\0';
+	copy[i] = '\0';
 	return (mem);
 }

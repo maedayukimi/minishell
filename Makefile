@@ -3,7 +3,7 @@ SHELL	= /bin/sh
 CC	= cc
 CFLAGS	= -Wall -Wextra -Werror -g
 LINK	= -lreadline -lncurses -L/opt/homebrew/opt/readline/lib
-INC		= -I./ -I/opt/homebrew/opt/readline/include
+INC = -I./ -I/opt/homebrew/opt/readline/include
 RM	 = rm -f
 
 SRCS	= main.c parse.c tokenizer.c free_utils.c \
@@ -20,20 +20,22 @@ SRCS	= main.c parse.c tokenizer.c free_utils.c \
 		  search_path.c ft_sprintf.c ft_dprintf.c expansion_utils.c \
 		  ft_strlen.c env_management.c handle_pl.c token_utils2.c \
 		  builtin2.c builtin3.c builtin4.c builtin5.c builtin6.c \
-		  ft_strcmp.c exec_sep.c redirect_open.c redirect_do.c redirect_reset.c
+		  ft_strcmp.c exec_sep.c redirect_open.c redirect_do.c redirect_reset.c \
+		  ft_strdup.c ft_strlcpy.c ft_strcpy.c ft_strncmp.c \
+		  ft_calloc.c ft_bzero.c ft_memset.c ft_strchr.c \
+		  ft_isalnum.c ft_memcpy.c ft_isspace.c ft_atoi.c
 
 OBJS	= $(SRCS:.c=.o)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
-
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LINK) -o $(NAME)
 
-all: $(NAME)
+all: $(LIBFT_A) $(NAME)
 
 clean:
-		$(RM) $(OBJS)
+	$(RM) $(OBJS)
 
 fclean: clean
 	$(RM) $(NAME)

@@ -48,7 +48,7 @@ int	builtin_exit(char **argv)
 	exit_status = 0;
 	fprintf(stderr, "exit\n");
 	if (argv[1])
-		exit_status = atoi(argv[1]);
+		exit_status = ft_atoi(argv[1]);
 	exit(exit_status);
 	return (exit_status);
 }
