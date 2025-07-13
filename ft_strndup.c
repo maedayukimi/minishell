@@ -1,24 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcpy.c                                        :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mawako <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/13 15:26:45 by mawako            #+#    #+#             */
-/*   Updated: 2025/07/13 16:12:57 by mawako           ###   ########.fr       */
+/*   Created: 2025/07/13 16:10:09 by mawako            #+#    #+#             */
+/*   Updated: 2025/07/13 16:11:19 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_strcpy(char *dest, const char *src)
+char	*ft_strndup(const char *s, size_t n)
 {
-	char	*start;
+	size_t	len;
+	char	*dup;
+	size_t	i;
 
-	start = dest;
-	while (*src)
-		*dest++ = *src++;
-	*dest = '\0';
-	return (start);
+	len = 0;
+	while (s[len] && len < n)
+		len++;
+	dup = (char *)malloc(sizeof(char) * (len + 1));
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
 }

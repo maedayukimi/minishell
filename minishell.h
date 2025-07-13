@@ -6,7 +6,7 @@
 /*   By: shuu <shuu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 18:38:59 by mawako            #+#    #+#             */
-/*   Updated: 2025/07/13 15:42:45 by mawako           ###   ########.fr       */
+/*   Updated: 2025/07/13 16:11:56 by mawako           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,5 +255,6 @@ int			ft_isalnum(int c);
 void		*ft_memcpy(void *dest, const void *src, size_t n);
 int			ft_isspace(int c);
 int			ft_atoi(const char *n);
+char		*ft_strndup(const char *s, size_t n);
 
 #endif

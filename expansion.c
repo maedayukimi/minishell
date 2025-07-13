@@ -44,9 +44,9 @@ char	*find_env(char *p)
 	while (p[size] && (p[size] != DUOBLE_QUOTE_CHAR)
 		&& (p[size] != SINGLE_QUOTE_CHAR) && !is_blank(p[size]))
 		size++;
-	env = strndup(p, size);
+	env = ft_strndup(p, size);
 	if (!env)
-		fatal_error("find_env: strndup");
+		fatal_error("find_env: ft_strndup");
 	content = getenv(env);
 	free(env);
 	if (!content)

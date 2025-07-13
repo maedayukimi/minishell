@@ -84,9 +84,9 @@ t_token	*word_func(char **rest, char *line)
 	char	*tmp;
 
 	len = get_word_len(line);
-	tmp = strndup(line, len);
+	tmp = ft_strndup(line, len);
 	if (!tmp)
-		fatal_error("word_func: strndup");
+		fatal_error("word_func: ft_strndup");
 	*rest = line + len;
 	return (new_token(tmp, TK_WORD));
 }

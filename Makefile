@@ -23,8 +23,7 @@ SRCS	= main.c parse.c tokenizer.c free_utils.c \
 		  ft_strcmp.c exec_sep.c redirect_open.c redirect_do.c redirect_reset.c \
 		  ft_strdup.c ft_strlcpy.c ft_strcpy.c ft_strncmp.c \
 		  ft_calloc.c ft_bzero.c ft_memset.c ft_strchr.c \
-		  ft_isalnum.c ft_memcpy.c ft_isspace.c ft_atoi.c
-
+		  ft_isalnum.c ft_memcpy.c ft_isspace.c ft_atoi.c ft_strndup.c
 OBJS	= $(SRCS:.c=.o)
 
 %.o: %.c
